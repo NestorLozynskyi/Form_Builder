@@ -1,0 +1,142 @@
+@if (formMissing()) {
+  <app-not-found />
+} @else {
+<div class="fb-app">
+  <app-header active="forms" />
+  <main class="fb-main" id="main">
+    <div class="fb-container fb-container--narrow">
+      @if (loadError(); as err) {
+        <app-system-error [offline]="err.isNetwork" [reference]="$any(err.problem)['traceId'] ?? null" (retry)="load()" />
+      } @else {
+        <div class="rd-top">
+          <a class="fb-back" [routerLink]="['/forms', id(), 'responses']"><svg appIcon="arrow-left"></svg>All responses</a>
+        </div>
+
+        @if (notFound()) {
+          <section class="fb-card" aria-labelledby="nf-t">
+            <div class="fb-empty">
+              <div class="fb-empty__icon"><svg appIcon="file-text"></svg></div>
+              <h1 class="fb-empty__title" id="nf-t">Response not found</h1>
+              <p class="fb-empty__text">This response was deleted or doesn’t exist. Responses that are deleted can’t be restored.</p>
+              <div class="fb-empty__actions">
+                <a class="fb-btn fb-btn--primary" [routerLink]="['/forms', id(), 'responses']"><svg appIcon="arrow-left"></svg>Back to responses</a>
+              </div>
+            </div>
+          </section>
+        } @else if (r(); as r) {
+          <div class="fb-page-header rd-header">
+            <div class="fb-page-header__main">
+              <p class="fb-caption">{{ form()?.title }}</p>
+              <h1 class="fb-page-header__title">Response #{{ r.number }}</h1>
+              <ul class="fb-meta-list rd-meta">
+                <li>Submitted <time [attr.datetime]="r.submittedAt">{{ dateTime(r.submittedAt) }}</time></li>
+                @if (isOld()) {
+                  <li>Version <span class="fb-version"><span aria-hidden="true">v{{ r.version }}</span><span class="fb-sr-only">{{ r.version }}</span></span></li>
+                  <li>Live version <span class="fb-version fb-version--current"><span aria-hidden="true">v{{ live() }}</span><span class="fb-sr-only">{{ live() }}</span></span></li>
+                } @else {
+                  <li>Version <span class="fb-version fb-version--current"><span aria-hidden="true">v{{ r.version }}</span><span class="fb-sr-only">{{ r.version }}</span></span> (live)</li>
+                }
+              </ul>
+            </div>
+            <div class="fb-page-header__actions">
+              <nav class="rd-pager" aria-label="Response navigation">
+                @if (r.prevId) {
+                  <a class="fb-btn fb-btn--secondary fb-btn--icon" [routerLink]="['/forms', id(), 'responses', r.prevId]" aria-label="Newer response" data-tooltip="Newer"><svg appIcon="chevron-left"></svg></a>
+                } @else {
+                  <button type="button" class="fb-btn fb-btn--secondary fb-btn--icon" aria-label="Newer response" disabled><svg appIcon="chevron-left"></svg></button>
+                }
+                <span class="rd-pager__pos">{{ r.index }} of {{ r.total.toLocaleString('en-US') }}</span>
+                @if (r.nextId) {
+                  <a class="fb-btn fb-btn--secondary fb-btn--icon" [routerLink]="['/forms', id(), 'responses', r.nextId]" aria-label="Older response" data-tooltip="Older"><svg appIcon="chevron-right"></svg></a>
+                } @else {
+                  <button type="button" class="fb-btn fb-btn--secondary fb-btn--icon" aria-label="Older response" disabled><svg appIcon="chevron-right"></svg></button>
+                }
+              </nav>
+              <button #delBtn type="button" class="fb-btn fb-btn--danger-ghost" (click)="askDelete(delBtn)"><svg appIcon="trash"></svg>Delete response</button>
+            </div>
+          </div>
+
+          @if (isOld()) {
+            <div class="fb-alert fb-alert--info rd-alert">
+              <svg class="fb-alert__icon" appIcon="history"></svg>
+              <div class="fb-alert__content">
+                <p class="fb-alert__title">Submitted to version {{ r.version }}.</p>
+                <p class="fb-alert__text">The form has changed since — fields that no longer exist are marked. Answers are shown exactly as they were submitted.</p>
+              </div>
+            </div>
+          }
+
+          <section class="fb-card" aria-labelledby="ans-t">
+            <div class="fb-card__header">
+              <div>
+                <h2 class="fb-card__title" id="ans-t">Answers</h2>
+                <p class="fb-card__subtitle">In form order · version {{ r.version }}</p>
+              </div>
+            </div>
+            <div class="fb-card__body">
+              @for (g of groups(); track $index) {
+                @if (g.heading || desc(g)) {
+                  <div class="rd-section">
+                    <h3 class="rd-section__title"><svg [appIcon]="g.heading ? 'heading' : 'pilcrow'"></svg>{{ g.heading?.text || '' }}</h3>
+                    @if (desc(g)) { <p class="rd-section__desc">{{ desc(g) }}</p> }
+                  </div>
+                }
+                @if (g.rows.length) {
+                  <dl class="rd-answers">
+                    @for (row of g.rows; track row.block.id) {
+                      <div class="rd-answer" [class.rd-answer--missing]="row.missing" [class.rd-answer--removed]="row.removedIn !== null">
+                        <dt>
+                          <svg [appIcon]="meta[row.block.type].icon"></svg>
+                          <span class="rd-q">
+                            <span>{{ row.block.label }}@if (!row.block.required) { {{ ' ' }}<span class="fb-label__opt">(optional)</span> }</span>
+                            @if (row.removedIn !== null) {
+                              <span class="fb-badge fb-badge--warning fb-badge--sm"><svg appIcon="history"></svg>Removed in v{{ row.removedIn }}</span>
+                            }
+                          </span>
+                        </dt>
+                        @if (row.missing) {
+                          <dd><span class="rd-none"><svg appIcon="dashed-circle"></svg>Not in version {{ r.version }}</span></dd>
+                        } @else if (isEmpty(row.value)) {
+                          <dd><span class="rd-none">No answer</span></dd>
+                        } @else {
+                          @switch (row.block.type) {
+                            @case ('scale') {
+                              <dd><span class="rd-scale">{{ text(row.value) }} of {{ row.block.max ?? 5 }}</span>@if (scaleEnds(row.block)) {<span class="rd-scale-ends">{{ scaleEnds(row.block) }}</span>}</dd>
+                            }
+                            @case ('checkbox') {
+                              <dd><ul class="rd-chips" [attr.aria-label]="list(row.value).length + ' selected'">@for (o of list(row.value); track $index) { <li class="fb-chip">{{ o }}</li> }</ul></dd>
+                            }
+                            @case ('number') { <dd class="fb-num">{{ text(row.value) }}</dd> }
+                            @case ('date') { <dd><time [attr.datetime]="text(row.value)">{{ longDate(text(row.value)) }}</time></dd> }
+                            @case ('long') { <dd class="rd-long">{{ text(row.value) }}</dd> }
+                            @default { <dd>{{ text(row.value) }}</dd> }
+                          }
+                        }
+                      </div>
+                    }
+                  </dl>
+                }
+              }
+            </div>
+          </section>
+        } @else {
+          <div class="fb-card"><div class="fb-card__body"><span class="fb-skeleton fb-skeleton--title" style="width: 40%"></span><span class="fb-sr-only" role="status">Loading response…</span></div></div>
+        }
+      }
+    </div>
+  </main>
+</div>
+}
+
+<dialog #deleteDlg class="fb-dialog fb-dialog--danger fb-dialog--sm" aria-labelledby="dlg-delete-t" aria-describedby="dlg-delete-d" (cancel)="$event.preventDefault(); cancelDelete()">
+  <div class="fb-dialog__header">
+    <span class="fb-dialog__icon"><svg appIcon="trash"></svg></span>
+    <h2 class="fb-dialog__title" id="dlg-delete-t">Delete response #{{ r()?.number }}?</h2>
+    <button type="button" class="fb-btn fb-btn--ghost fb-btn--icon fb-btn--sm" aria-label="Close" (click)="cancelDelete()"><svg appIcon="x"></svg></button>
+  </div>
+  <div class="fb-dialog__body"><p id="dlg-delete-d">This permanently deletes this response. This can’t be undone.</p></div>
+  <div class="fb-dialog__footer">
+    <button type="button" class="fb-btn fb-btn--secondary" autofocus (click)="cancelDelete()">Cancel</button>
+    <button type="button" class="fb-btn fb-btn--danger" [class.is-loading]="deleting()" [attr.aria-busy]="deleting() || null" (click)="confirmDelete()"><svg appIcon="trash"></svg>Delete response</button>
+  </div>
+</dialog>

@@ -1,0 +1,41 @@
+  .resp-crumbs { margin-bottom: var(--space-3); }
+  .resp-tabs { margin-bottom: var(--space-5); }
+  .resp-tabs .fb-tab { text-decoration: none; }
+  .resp-summary { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-5); margin-bottom: var(--space-4); font-size: var(--fs-14); color: var(--text-2); }
+  .resp-summary__item { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 24px; }
+  .resp-summary__count { font-size: var(--fs-16); color: var(--text); }
+  .resp-summary__count strong { font-weight: var(--fw-heading); font-variant-numeric: tabular-nums; }
+  .resp-summary .icon { width: 16px; height: 16px; }
+  .resp-export { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+  .resp-table time { white-space: nowrap; }
+  .resp-table th:first-child { width: 72px; }
+  .resp-row-actions { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .resp-row-actions .fb-btn .icon--sm { margin-left: -2px; }
+  .resp-table-wrap:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+  .resp-note { display: flex; align-items: flex-start; gap: var(--space-2); font-size: var(--fs-14); color: var(--text-2); margin-top: var(--space-1); }
+  .resp-note .icon { flex: none; width: 16px; height: 16px; margin-top: 2px; }
+  .resp-note .fb-version { vertical-align: 1px; }
+  .resp-empty-copy { width: 100%; max-width: 520px; margin-top: var(--space-2); text-align: left; }
+  .resp-banner-link { white-space: nowrap; }
+  /* Tablet: keep every column; the table scrolls inside its own bordered wrapper (never the page). */
+  @media (min-width: 768px) and (max-width: 1199.98px) {
+    .resp-table { min-width: 880px; }
+  }
+  @media (max-width: 767.98px) {
+    .resp-tabs { margin-bottom: var(--space-4); }
+    .resp-summary { gap: var(--space-2) var(--space-4); }
+    .resp-table th:first-child { width: auto; }
+    .resp-table td.fb-table__primary { font-size: var(--fs-16); }
+  }
+.resp-table td .fb-muted { color: var(--text-2); }
+.resp-table td { overflow-wrap: anywhere; }
+/* Long question labels must not squeeze the table: headers truncate (full text in title), # and dates never wrap. */
+.resp-table th { white-space: nowrap; }
+.resp-table th.resp-q { max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+.resp-table td.fb-table__primary { white-space: nowrap; }
+.resp-table td.resp-q { min-width: 120px; }
+@media (max-width: 767.98px) {
+  /* stacked cards: long question labels wrap inside the label column instead of running under the value */
+  .resp-table td::before { white-space: normal; overflow-wrap: anywhere; }
+  .resp-table td.fb-table__num { white-space: normal; }
+}

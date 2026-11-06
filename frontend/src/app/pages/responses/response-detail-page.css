@@ -1,0 +1,51 @@
+  .rd-top { display: grid; gap: var(--space-1); margin-bottom: var(--space-4); }
+  .rd-top .fb-back { justify-self: start; }
+  .rd-header { margin-bottom: var(--space-5); }
+  .rd-meta time { white-space: nowrap; }
+  .rd-meta .fb-version { margin-left: 2px; }
+  .rd-pager { display: inline-flex; align-items: center; gap: var(--space-2); }
+  .rd-pager__pos { font-size: var(--fs-14); color: var(--text-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .rd-alert { margin-bottom: var(--space-5); }
+
+  .rd-answers { margin: 0; display: grid; }
+  .rd-answer {
+    display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: var(--space-2) var(--space-5);
+    padding: var(--space-4) 0; border-bottom: 1px solid var(--border);
+  }
+  .rd-answers > .rd-answer:first-child { padding-top: 0; }
+  .rd-answers > .rd-answer:last-child { border-bottom: 0; padding-bottom: 0; }
+  .rd-answer > dt { display: flex; align-items: flex-start; gap: var(--space-2); min-width: 0; font-size: var(--fs-14); line-height: 1.45; font-weight: 500; color: var(--text-2); }
+  .rd-answer > dt > .icon { flex: none; width: 16px; height: 16px; margin-top: 2px; }
+  .rd-q { display: grid; gap: 6px; justify-items: start; min-width: 0; overflow-wrap: anywhere; }
+  .rd-answer > dd { margin: 0; min-width: 0; font-size: var(--fs-16); line-height: var(--lh-body); color: var(--text); overflow-wrap: anywhere; }
+  .rd-long { white-space: pre-line; }
+  .rd-scale { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .rd-scale-ends { display: block; font-size: var(--fs-12); color: var(--text-2); margin-top: 2px; }
+  .rd-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .rd-chips .fb-chip { color: var(--text); white-space: normal; height: auto; min-height: 24px; }
+  .rd-none { display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); font-size: var(--fs-14); }
+  .rd-none .icon { width: 14px; height: 14px; }
+
+  /* field removed from the live version: dashed outline + badge (not colour alone); answer keeps full contrast */
+  .rd-answer--removed {
+    margin: var(--space-2) calc(-1 * var(--space-3)); padding: var(--space-3);
+    background: var(--surface-2); border: 1px dashed var(--border-strong); border-radius: var(--radius-control);
+  }
+  .rd-answers > .rd-answer--removed:last-child { padding-bottom: var(--space-3); }
+  .rd-answer:has(+ .rd-answer--removed) { border-bottom-color: transparent; }
+  /* field that did not exist in the submitted version */
+  .rd-answer--missing > dt { color: var(--text-2); }
+  .rd-answer--missing > dt .rd-q { opacity: .85; }
+
+  .rd-section { display: grid; gap: var(--space-1); margin: var(--space-5) 0 var(--space-4); padding-top: var(--space-5); border-top: 1px solid var(--border); }
+  .rd-section__title { display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-16); font-weight: var(--fw-heading); letter-spacing: -0.01em; }
+  .rd-section__title .icon { width: 16px; height: 16px; color: var(--text-2); }
+  .rd-section__desc { font-size: var(--fs-14); color: var(--text-2); max-width: 60ch; padding-left: 24px; }
+
+  @media (max-width: 767.98px) {
+    .rd-answer { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); padding: var(--space-3) 0; }
+    .rd-answer > dd { padding-left: 24px; }
+    .rd-answer--removed { margin-inline: calc(-1 * var(--space-2)); padding: var(--space-3) var(--space-2); }
+    .rd-header .fb-page-header__actions { width: 100%; justify-content: space-between; }
+  }
+.rd-section__title:empty { display: none; }

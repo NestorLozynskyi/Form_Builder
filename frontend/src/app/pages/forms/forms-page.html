@@ -1,0 +1,158 @@
+<div class="fb-app">
+  <app-header active="forms" />
+
+  <main class="fb-main" id="main">
+    <div class="fb-container">
+      @if (loadError(); as err) {
+        <app-system-error [offline]="err.isNetwork" [reference]="$any(err.problem)['traceId'] ?? null" (retry)="load()" />
+      } @else {
+        <div class="fb-page-header">
+          <div class="fb-page-header__main">
+            <h1 #pageTitle class="fb-page-header__title" id="page-title" tabindex="-1">Forms</h1>
+            <p class="fb-page-header__meta">
+              @if (forms()) {
+                <span id="forms-count">{{ countText() }}</span>
+              } @else {
+                <span class="fb-skeleton fb-skeleton--text sk-inline" style="width: 64px" aria-hidden="true"></span>
+              }
+            </p>
+          </div>
+          @if (forms() === null || forms()!.length > 0) {
+            <div class="fb-page-header__actions">
+              <button type="button" class="fb-btn fb-btn--primary fb-btn--block-mobile" [class.is-loading]="creating()" [attr.aria-busy]="creating() || null" (click)="create()">
+                <svg appIcon="plus"></svg>New form
+              </button>
+            </div>
+          }
+        </div>
+
+        @if (forms() === null || forms()!.length > 0) {
+          <div>
+            <div class="forms-toolbar">
+              <div class="fb-input-wrap forms-search">
+                <svg appIcon="search"></svg>
+                <input #search class="fb-input" type="search" placeholder="Search by title" aria-label="Search forms by title" autocomplete="off"
+                  [value]="query()" (input)="query.set(search.value)" />
+              </div>
+              <div class="fb-segmented forms-filter" role="group" aria-label="Filter by status">
+                @for (f of filters; track f.key) {
+                  <button type="button" class="fb-segmented__item" [attr.aria-pressed]="filter() === f.key" (click)="filter.set(f.key)">{{ f.label }}</button>
+                }
+              </div>
+            </div>
+
+            @if (forms() === null || visible().length > 0) {
+              <div class="fb-table-wrap fb-table-wrap--page">
+                <table class="fb-table fb-table--hover fb-table--stack forms-table" aria-describedby="forms-count">
+                  <caption class="fb-sr-only">Your forms, most recently updated first</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Form</th>
+                      <th scope="col" class="col-status">Status</th>
+                      <th scope="col" class="col-resp fb-table__num">Responses</th>
+                      <th scope="col" class="col-upd fb-hide-tablet-down" aria-sort="descending">Updated<svg class="icon--xs" appIcon="arrow-down"></svg></th>
+                      <th scope="col" class="fb-table__actions"><span class="fb-sr-only">Actions</span></th>
+                    </tr>
+                  </thead>
+                  @if (forms() === null) {
+                    <tbody aria-hidden="true">
+                      @for (w of [58, 44, 66, 50, 32]; track $index) {
+                        <tr>
+                          <td class="forms-title-td"><span class="fb-skeleton fb-skeleton--text" [style.width.%]="w" style="height: 14px"></span></td>
+                          <td><span class="fb-skeleton sk-pill" [style.width.px]="[96, 72, 64, 72, 64][$index]"></span></td>
+                          <td class="fb-table__num"><span class="fb-skeleton fb-skeleton--text sk-inline" [style.width.px]="[32, 24, 16, 24, 16][$index]"></span></td>
+                          <td class="fb-hide-tablet-down"><span class="fb-skeleton fb-skeleton--text" [style.width.px]="[88, 72, 80, 88, 80][$index]"></span></td>
+                          <td class="fb-table__actions"><span class="fb-skeleton sk-inline" style="width: 32px; height: 32px"></span></td>
+                        </tr>
+                      }
+                    </tbody>
+                  } @else {
+                    <tbody>
+                      @for (f of visible(); track f.id) {
+                        <tr [attr.data-form-id]="f.id">
+                          <td class="forms-title-td">
+                            <div class="forms-title-cell">
+                              <a class="forms-title" [routerLink]="['/forms', f.id, 'edit']">{{ f.title }}</a>
+                              <span class="fb-caption fb-show-tablet-down">Updated <time [attr.datetime]="f.updatedAt" [title]="fullDate(f.updatedAt)">{{ relative(f.updatedAt).toLowerCase() === 'yesterday' ? 'yesterday' : relative(f.updatedAt) }}</time></span>
+                            </div>
+                          </td>
+                          <td data-label="Status">
+                            <div class="forms-status">
+                              <app-status-badges [status]="f.status" [version]="f.liveVersion" [unpublished]="f.hasUnpublishedChanges" />
+                            </div>
+                          </td>
+                          @if (f.responseCount > 0) {
+                            <td class="fb-table__num" data-label="Responses"><a class="forms-resp" [routerLink]="['/forms', f.id, 'responses']">{{ f.responseCount.toLocaleString('en-US') }}<span class="fb-sr-only"> responses, view</span></a></td>
+                          } @else {
+                            <td class="fb-table__num fb-table__muted" data-label="Responses">0<span class="fb-sr-only"> responses</span></td>
+                          }
+                          <td class="fb-hide-tablet-down fb-table__muted" data-label="Updated"><time [attr.datetime]="f.updatedAt" [title]="fullDate(f.updatedAt)">{{ relative(f.updatedAt) }}</time></td>
+                          <td class="fb-table__actions">
+                            <div class="fb-menu-anchor">
+                              <button #trigger type="button" class="fb-btn fb-btn--ghost fb-btn--icon fb-btn--sm" appMenuTrigger [attr.aria-label]="'Actions for ' + f.title"><svg appIcon="more-horizontal"></svg></button>
+                              <div class="fb-menu" role="menu" hidden>
+                                <a class="fb-menu__item" role="menuitem" [routerLink]="['/forms', f.id, 'edit']"><svg appIcon="edit"></svg>Edit</a>
+                                <a class="fb-menu__item" role="menuitem" [routerLink]="['/forms', f.id, 'responses']"><svg appIcon="inbox"></svg>View responses</a>
+                                @if (f.publicId) {
+                                  <button type="button" class="fb-menu__item" role="menuitem" (click)="copyLink(f)"><svg appIcon="link"></svg>Copy public link</button>
+                                }
+                                <hr class="fb-menu__sep" />
+                                <button type="button" class="fb-menu__item fb-menu__item--danger" role="menuitem" (click)="askDelete(f, trigger)"><svg appIcon="trash"></svg>Delete…</button>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  }
+                </table>
+              </div>
+            }
+            @if (forms() === null) {
+              <p class="fb-sr-only" role="status">Loading forms…</p>
+            } @else if (visible().length === 0) {
+              <div class="fb-card">
+                <div class="fb-empty fb-empty--compact">
+                  <div class="fb-empty__icon"><svg appIcon="search"></svg></div>
+                  <h2 class="fb-empty__title">No forms match your filters</h2>
+                  <p class="fb-empty__text">Try a different title, or clear the search and status filter to see all your forms.</p>
+                  <div class="fb-empty__actions">
+                    <button type="button" class="fb-btn fb-btn--secondary" (click)="clearFilters()">Clear filters</button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="fb-card">
+            <div class="fb-empty">
+              <div class="fb-empty__icon"><svg appIcon="file-text"></svg></div>
+              <h2 class="fb-empty__title">No forms yet</h2>
+              <p class="fb-empty__text">Create your first form, publish it and share the link to start collecting responses.</p>
+              <div class="fb-empty__actions">
+                <button type="button" class="fb-btn fb-btn--primary" [class.is-loading]="creating()" (click)="create()"><svg appIcon="plus"></svg>New form</button>
+              </div>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </main>
+</div>
+
+<dialog #deleteDialog class="fb-dialog fb-dialog--danger fb-dialog--sm" aria-labelledby="delete-title" aria-describedby="delete-desc" (close)="onDialogClose()" (cancel)="$event.preventDefault(); cancelDelete()">
+  <div class="fb-dialog__header">
+    <span class="fb-dialog__icon"><svg appIcon="trash"></svg></span>
+    <h2 class="fb-dialog__title" id="delete-title">Delete form?</h2>
+    <button type="button" class="fb-btn fb-btn--ghost fb-btn--icon fb-btn--sm" aria-label="Close" (click)="cancelDelete()"><svg appIcon="x"></svg></button>
+  </div>
+  <div class="fb-dialog__body">
+    @if (pending(); as f) {
+      <p id="delete-desc">This permanently deletes the form <strong>{{ f.title }}</strong>@if (f.responseCount > 0) {<span> and its {{ f.responseCount.toLocaleString('en-US') }} response{{ f.responseCount === 1 ? '' : 's' }}</span>}. This can’t be undone.</p>
+    }
+  </div>
+  <div class="fb-dialog__footer">
+    <button type="button" class="fb-btn fb-btn--secondary" autofocus (click)="cancelDelete()">Cancel</button>
+    <button type="button" class="fb-btn fb-btn--danger" [class.is-loading]="deleting()" [attr.aria-busy]="deleting() || null" (click)="confirmDelete()"><svg appIcon="trash"></svg>Delete form</button>
+  </div>
+</dialog>

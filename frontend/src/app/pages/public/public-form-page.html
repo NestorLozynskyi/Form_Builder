@@ -1,0 +1,75 @@
+@switch (view()) {
+  @case ('loading') {
+    <main class="pf-neutral" aria-busy="true">
+      <div class="pf-loading"><span class="fb-spinner fb-spinner--lg" aria-hidden="true"></span><span class="fb-sr-only" role="status">Loading form…</span></div>
+    </main>
+  }
+  @case ('not-available') {
+    <main class="pf-neutral">
+      <div class="fb-form">
+        <div class="fb-form__result">
+          <span class="fb-form__result-icon fb-form__result-icon--neutral"><svg appIcon="alert-circle"></svg></span>
+          <h1 class="fb-form__result-title">Form not available</h1>
+          <p class="fb-form__result-text">This link may be incorrect or the form was removed. Check the link with the person who shared it with you.</p>
+        </div>
+      </div>
+      <p class="fb-public-footer">Powered by Form Builder</p>
+    </main>
+  }
+  @case ('error') {
+    <main class="pf-neutral">
+      <div class="fb-form">
+        <div class="fb-form__result">
+          <span class="fb-form__result-icon fb-form__result-icon--neutral"><svg appIcon="wifi-off"></svg></span>
+          <h1 class="fb-form__result-title">We couldn’t load this form</h1>
+          <p class="fb-form__result-text">Check your connection and try again.</p>
+          <button type="button" class="fb-btn fb-btn--secondary" (click)="load()"><svg appIcon="refresh"></svg>Try again</button>
+        </div>
+      </div>
+      <p class="fb-public-footer">Powered by Form Builder</p>
+    </main>
+  }
+  @case ('closed') {
+    <main class="fb-public" [appAccent]="closedAccent()">
+      <div class="fb-form">
+        <div class="fb-form__result">
+          <span class="fb-form__result-icon fb-form__result-icon--neutral"><svg appIcon="lock"></svg></span>
+          <p class="pf-result-kicker">{{ closedTitle() }}</p>
+          <h1 class="fb-form__result-title">This form is no longer accepting responses</h1>
+          <p class="fb-form__result-text">The owner closed this form, so new answers can't be sent. If you still need to reach them, contact the person who shared the link with you.</p>
+        </div>
+      </div>
+      <p class="fb-public-footer">Powered by Form Builder</p>
+    </main>
+  }
+  @default {
+    @if (schema(); as s) {
+      <main class="fb-public" [appAccent]="s.accent">
+        @if (notice(); as n) {
+          <div class="fb-alert fb-alert--warning pf-notice" role="alert">
+            <svg class="fb-alert__icon" appIcon="alert-triangle"></svg>
+            <div class="fb-alert__content">
+              <p class="fb-alert__title">This form has changed</p>
+              <p class="fb-alert__text">{{ n }}</p>
+            </div>
+            <div class="fb-alert__actions"><button type="button" class="fb-btn fb-btn--secondary fb-btn--sm" (click)="reload()"><svg appIcon="refresh"></svg>Reload</button></div>
+          </div>
+        }
+        @if (view() === 'success') {
+          <div class="fb-form">
+            <div class="fb-form__result">
+              <span class="fb-form__result-icon"><svg appIcon="check"></svg></span>
+              <p class="pf-result-kicker">{{ s.title }}</p>
+              <h1 #successTitle class="fb-form__result-title" tabindex="-1">Response submitted</h1>
+              <p class="fb-form__result-text">{{ s.successMessage || 'Thanks! Your response has been recorded.' }}</p>
+              <a class="fb-link" href="" (click)="again($event)">Submit another response</a>
+            </div>
+          </div>
+        } @else {
+          <app-form-renderer [schema]="s" [state]="state()" [retryIn]="retryIn()" [serverErrors]="serverErrors()" (submitted)="submit($event)" />
+        }
+        <p class="fb-public-footer">Powered by Form Builder</p>
+      </main>
+    }
+  }
+}

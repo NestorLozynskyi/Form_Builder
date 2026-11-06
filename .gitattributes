@@ -1,0 +1,2 @@
+# CSV samples must keep RFC 4180 CRLF line endings byte-for-byte
+*.csv -text

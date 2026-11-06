@@ -1,0 +1,10 @@
+# Build context for deploy/caddy/Dockerfile is the repo root; only frontend sources + Caddyfile are needed.
+.tools/
+backend/
+e2e/
+docs/
+**/node_modules/
+**/dist/
+**/.angular/
+**/test-results/
+**/playwright-report/

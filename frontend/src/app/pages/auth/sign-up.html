@@ -1,0 +1,68 @@
+<div class="fb-app auth">
+  <div class="auth__bar"><app-theme-toggle /></div>
+
+  <main class="auth__main" id="main">
+    <a class="fb-logo auth__logo" routerLink="/sign-in" aria-label="Form Builder">
+      <svg class="fb-logo__mark" appIcon="logo"></svg>
+      <span class="fb-logo__word">Form Builder</span>
+    </a>
+
+    <section class="fb-card auth__card" aria-labelledby="signup-title">
+      <div class="auth__head">
+        <h1 class="fb-h2" id="signup-title">Create your account</h1>
+        <p class="fb-meta">Build forms and collect responses. All you need is an email and a password.</p>
+      </div>
+
+      <form class="auth__form" novalidate [formGroup]="form" (ngSubmit)="submit()">
+        @if (network()) {
+          <div class="fb-alert fb-alert--danger" role="alert">
+            <svg class="fb-alert__icon" appIcon="wifi-off"></svg>
+            <div class="fb-alert__content">
+              <p class="fb-alert__title">Couldn’t reach the server</p>
+              <p class="fb-alert__text">Your account wasn’t created. Check your internet connection and try again — your details are still here.</p>
+            </div>
+            <div class="fb-alert__actions">
+              <button type="button" class="fb-btn fb-btn--secondary fb-btn--sm" (click)="submit()"><svg appIcon="refresh"></svg>Try again</button>
+            </div>
+          </div>
+        }
+
+        <div class="fb-field" [class.is-invalid]="errors().email">
+          <label class="fb-label" for="su-email">Email</label>
+          <input #email class="fb-input" id="su-email" type="email" autocomplete="email" inputmode="email" spellcheck="false" placeholder="name@example.com"
+            formControlName="email" [readOnly]="loading()" [attr.aria-invalid]="errors().email ? 'true' : null" [attr.aria-describedby]="errors().email ? 'su-email-err' : null" />
+          @if (errors().email; as m) {
+            <p class="fb-error" id="su-email-err"><svg class="icon--sm" appIcon="alert-circle"></svg><span>
+              @if (isTaken()) { An account with this email already exists. <a class="fb-link" routerLink="/sign-in">Sign in instead</a> or use a different email. } @else { {{ m }} }
+            </span></p>
+          }
+        </div>
+
+        <div class="fb-field" [class.is-invalid]="errors().password">
+          <label class="fb-label" for="su-password">Password</label>
+          <p class="fb-help" id="su-password-help">Use at least 8 characters.</p>
+          <app-password-input inputId="su-password" autocomplete="new-password" [control]="form.controls.password" [readonly]="loading()"
+            [error]="errors().password ?? null" [describedBy]="'su-password-help' + (errors().password ? ' su-password-err' : '')" />
+          @if (errors().password; as m) {
+            <p class="fb-error" id="su-password-err"><svg class="icon--sm" appIcon="alert-circle"></svg><span>{{ m }}</span></p>
+          }
+        </div>
+
+        <div class="fb-field" [class.is-invalid]="errors().confirm">
+          <label class="fb-label" for="su-confirm">Confirm password</label>
+          <app-password-input inputId="su-confirm" autocomplete="new-password" [control]="form.controls.confirm" [readonly]="loading()"
+            [error]="errors().confirm ?? null" [describedBy]="errors().confirm ? 'su-confirm-err' : ''" />
+          @if (errors().confirm; as m) {
+            <p class="fb-error" id="su-confirm-err"><svg class="icon--sm" appIcon="alert-circle"></svg><span>{{ m }}</span></p>
+          }
+        </div>
+
+        <button type="submit" class="fb-btn fb-btn--primary fb-btn--lg fb-btn--block" [class.is-loading]="loading()" [attr.aria-busy]="loading() || null">
+          <span>{{ loading() ? 'Creating account…' : 'Create account' }}</span>
+        </button>
+      </form>
+    </section>
+
+    <p class="auth__switch">Already have an account? <a routerLink="/sign-in">Sign in</a></p>
+  </main>
+</div>

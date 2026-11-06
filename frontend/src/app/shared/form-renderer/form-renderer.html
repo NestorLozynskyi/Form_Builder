@@ -1,0 +1,203 @@
+<form class="fb-form" novalidate aria-labelledby="pf-title" [formGroup]="form" (ngSubmit)="submit()">
+  <header class="fb-form__header">
+    <h1 class="fb-form__title" id="pf-title">{{ schema().title }}</h1>
+    @if (schema().description) {
+      <p class="fb-form__desc">{{ schema().description }}</p>
+    }
+    @if (hasRequired()) {
+      <p class="fb-form__note">Questions marked <span class="pf-req-mark">*</span> are required.</p>
+    }
+  </header>
+
+  @if (summary().length) {
+    <div #summaryBox class="fb-alert fb-alert--danger pf-summary" tabindex="-1" aria-labelledby="pf-summary-title">
+      <svg class="fb-alert__icon" appIcon="alert-circle"></svg>
+      <div class="fb-alert__content">
+        <h2 class="fb-alert__title" id="pf-summary-title">Fix {{ summary().length }} {{ summary().length === 1 ? 'problem' : 'problems' }} to submit</h2>
+        <div class="fb-alert__text">
+          <p>Your answers are kept. Select a problem to go to that question.</p>
+          <ul>
+            @for (s of summary(); track s.id) {
+              <li><a [href]="'#' + s.id" (click)="goTo(s.id, $event)">{{ s.text }}</a></li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="fb-form__body">
+    @for (b of blocks(); track b.id) {
+      @switch (b.type) {
+        @case ('heading') {
+          <div class="fb-form__section">
+            <h2 class="fb-form__section-title">{{ b.text || 'Untitled section' }}</h2>
+            @if (sectionText().get(b.id); as d) { <p class="fb-form__text">{{ textOf(d) }}</p> }
+          </div>
+        }
+        @case ('description') {
+          @if (b.text && !absorbed().has(b.id)) {
+            <p class="fb-form__text">{{ b.text }}</p>
+          }
+        }
+        @case ('scale') {
+          <fieldset class="fb-fieldset" [attr.data-field]="b.id" [class.is-invalid]="errors()[b.id]" [attr.aria-describedby]="describedBy(b)">
+            <legend class="fb-label">{{ b.label }} <ng-container *ngTemplateOutlet="mark; context: { $implicit: b }" /></legend>
+            @if (b.help) { <p class="fb-help" [id]="'pf-' + b.id + '-help'">{{ b.help }}</p> }
+            <div>
+              <div class="fb-scale" [attr.aria-invalid]="errors()[b.id] ? 'true' : null">
+                @for (v of scaleItems(b); track v; let i = $index, last = $last) {
+                  <label class="fb-scale__item">
+                    <input type="radio" [name]="b.id" [id]="'pf-' + b.id + '-' + i" [value]="v" [formControlName]="b.id"
+                      [attr.aria-label]="i === 0 && b.leftLabel ? v + ', ' + b.leftLabel : last && b.rightLabel ? v + ', ' + b.rightLabel : null"
+                      [attr.aria-invalid]="errors()[b.id] ? 'true' : null" (change)="onChoice(b)" />
+                    <span>{{ v }}</span>
+                  </label>
+                }
+              </div>
+              @if (b.leftLabel || b.rightLabel) {
+                <div class="fb-scale__ends" aria-hidden="true"><span>{{ b.leftLabel }}</span><span>{{ b.rightLabel }}</span></div>
+              }
+            </div>
+            <ng-container *ngTemplateOutlet="err; context: { $implicit: b }" />
+          </fieldset>
+        }
+        @case ('radio') {
+          <fieldset class="fb-fieldset" [attr.data-field]="b.id" [class.is-invalid]="errors()[b.id]" [attr.aria-describedby]="describedBy(b)">
+            <legend class="fb-label">{{ b.label }} <ng-container *ngTemplateOutlet="mark; context: { $implicit: b }" /></legend>
+            @if (b.help) { <p class="fb-help" [id]="'pf-' + b.id + '-help'">{{ b.help }}</p> }
+            <div class="fb-choices">
+              @for (o of options(b); track $index; let i = $index) {
+                <label class="fb-choice">
+                  <input type="radio" class="fb-radio" [name]="b.id" [id]="'pf-' + b.id + '-' + i" [value]="o" [formControlName]="b.id"
+                    [attr.aria-invalid]="errors()[b.id] ? 'true' : null" (change)="onChoice(b)" />
+                  <span>{{ o }}</span>
+                </label>
+              }
+            </div>
+            <ng-container *ngTemplateOutlet="err; context: { $implicit: b }" />
+          </fieldset>
+        }
+        @case ('checkbox') {
+          <fieldset class="fb-fieldset" [attr.data-field]="b.id" [class.is-invalid]="errors()[b.id]" [attr.aria-describedby]="describedBy(b)">
+            <legend class="fb-label">{{ b.label }} <ng-container *ngTemplateOutlet="mark; context: { $implicit: b }" /></legend>
+            @if (b.help) { <p class="fb-help" [id]="'pf-' + b.id + '-help'">{{ b.help }}</p> }
+            <div class="fb-choices">
+              @for (o of options(b); track $index; let i = $index) {
+                <label class="fb-choice">
+                  <input type="checkbox" class="fb-checkbox" [name]="b.id" [id]="'pf-' + b.id + '-' + i" [checked]="isChecked(b, o)" [disabled]="state() === 'submitting'"
+                    [attr.aria-invalid]="errors()[b.id] ? 'true' : null" (change)="toggle(b, o, $any($event.target).checked)" />
+                  <span>{{ o }}</span>
+                </label>
+              }
+            </div>
+            <ng-container *ngTemplateOutlet="err; context: { $implicit: b }" />
+          </fieldset>
+        }
+        @default {
+          <div class="fb-field" [attr.data-field]="b.id" [class.is-invalid]="errors()[b.id]">
+            <label class="fb-label" [for]="inputId(b)">{{ b.label }} <ng-container *ngTemplateOutlet="mark; context: { $implicit: b }" /></label>
+            @if (b.help) { <p class="fb-help" [id]="'pf-' + b.id + '-help'">{{ b.help }}</p> }
+            @switch (b.type) {
+              @case ('long') {
+                <textarea class="fb-input fb-textarea" rows="5" [id]="inputId(b)" [formControlName]="b.id"
+                  [attr.aria-invalid]="errors()[b.id] ? 'true' : null" [attr.aria-describedby]="describedBy(b, b.maxLength ? 'pf-' + b.id + '-count' : '')"
+                  (input)="onInput(b, $event)" (blur)="onBlur(b, $event)"></textarea>
+                @if (b.maxLength) {
+                  <div class="pf-count-row"><span class="fb-char-count" [id]="'pf-' + b.id + '-count'" [class.is-over]="(lengths()[b.id] ?? 0) > b.maxLength">{{ count(lengths()[b.id] ?? 0) }} / {{ count(b.maxLength) }} characters</span></div>
+                }
+              }
+              @case ('dropdown') {
+                <div class="fb-select pf-w-md">
+                  <select class="fb-input" [id]="inputId(b)" [formControlName]="b.id"
+                    [attr.aria-invalid]="errors()[b.id] ? 'true' : null" [attr.aria-describedby]="describedBy(b)" (change)="onChoice(b)">
+                    <option value="">Select an option</option>
+                    @for (o of options(b); track $index) {
+                      <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </div>
+              }
+              @case ('number') {
+                <input class="fb-input pf-w-sm" type="number" inputmode="decimal" step="any" [id]="inputId(b)" [formControlName]="b.id"
+                  [attr.min]="b.min ?? null" [attr.max]="b.max ?? null" [attr.inputmode]="b.integer ? 'numeric' : 'decimal'"
+                  [attr.aria-invalid]="errors()[b.id] ? 'true' : null" [attr.aria-describedby]="describedBy(b)" (input)="onInput(b, $event)" (blur)="onBlur(b, $event)" />
+              }
+              @case ('date') {
+                <input class="fb-input pf-w-sm" type="date" [id]="inputId(b)" [formControlName]="b.id"
+                  [attr.min]="b.earliest || null" [attr.max]="dateMax(b)"
+                  [attr.aria-invalid]="errors()[b.id] ? 'true' : null" [attr.aria-describedby]="describedBy(b)" (input)="onInput(b, $event)" (change)="onInput(b, $event)" (blur)="onBlur(b, $event)" />
+              }
+              @case ('email') {
+                <input class="fb-input" type="email" autocomplete="email" inputmode="email" spellcheck="false" [id]="inputId(b)" [formControlName]="b.id"
+                  [attr.aria-invalid]="errors()[b.id] ? 'true' : null" [attr.aria-describedby]="describedBy(b)" (input)="onInput(b, $event)" (blur)="onBlur(b, $event)" />
+              }
+              @default {
+                <input class="fb-input" type="text" [id]="inputId(b)" [formControlName]="b.id" [class.pf-w-md]="!!b.pattern"
+                  [attr.aria-invalid]="errors()[b.id] ? 'true' : null" [attr.aria-describedby]="describedBy(b)" (input)="onInput(b, $event)" (blur)="onBlur(b, $event)" />
+              }
+            }
+            <ng-container *ngTemplateOutlet="err; context: { $implicit: b }" />
+          </div>
+        }
+      }
+    }
+  </div>
+
+  <!-- anti-spam trap: invisible to people; bots that fill every field get silently dropped by the server -->
+  <div class="pf-hp" aria-hidden="true">
+    <label for="pf-website">Website</label>
+    <input id="pf-website" type="text" name="website" tabindex="-1" autocomplete="off" [formControl]="honeypot" />
+  </div>
+
+  @if (state() === 'rate-limited') {
+    <div class="fb-alert fb-alert--warning pf-banner">
+      <svg class="fb-alert__icon" appIcon="clock"></svg>
+      <div class="fb-alert__content">
+        <p class="fb-alert__title" role="alert">Too many attempts. Wait a minute and try again.</p>
+        <p class="fb-alert__text" id="pf-rate-text">You can try again in <span class="fb-num">{{ countdown() }}</span>. Your answers are still here.</p>
+      </div>
+    </div>
+  }
+  @if (state() === 'network-error') {
+    <div class="fb-alert fb-alert--danger pf-banner">
+      <svg class="fb-alert__icon" appIcon="wifi-off"></svg>
+      <div class="fb-alert__content" role="alert">
+        <p class="fb-alert__title">We couldn't send your response.</p>
+        <p class="fb-alert__text">Check your connection and try again. Your answers are still here.</p>
+      </div>
+      <div class="fb-alert__actions">
+        <button type="button" class="fb-btn fb-btn--secondary fb-btn--sm" (click)="submit()"><svg appIcon="refresh"></svg>Try again</button>
+      </div>
+    </div>
+  }
+
+  <div class="fb-form__footer">
+    <button type="submit" class="fb-btn fb-btn--primary fb-btn--lg pf-submit" [disabled]="state() === 'submitting' || state() === 'rate-limited'"
+      [class.is-loading]="state() === 'submitting'" [attr.aria-busy]="state() === 'submitting' || null" [attr.aria-describedby]="state() === 'rate-limited' ? 'pf-rate-text' : null">
+      @if (preview()) { <svg appIcon="send"></svg> }
+      <span>{{ state() === 'submitting' ? 'Submitting…' : 'Submit' }}</span>
+    </button>
+    @if (preview()) {
+      <span class="fb-caption">Preview only — nothing is sent.</span>
+    }
+    <p class="fb-sr-only" role="status">{{ state() === 'submitting' ? 'Submitting your response…' : '' }}</p>
+  </div>
+</form>
+
+<ng-template #mark let-b>
+  @if (b.required) {
+    <span class="fb-req" aria-hidden="true">*</span>
+    @if (b.type === 'scale' || b.type === 'radio' || b.type === 'checkbox') {
+      <span class="fb-sr-only">(required)</span>
+    }
+  } @else {
+    <span class="fb-label__opt">(optional)</span>
+  }
+</ng-template>
+
+<ng-template #err let-b>
+  @if (errors()[b.id]; as m) {
+    <p class="fb-error" [id]="'pf-' + b.id + '-err'"><svg class="icon--sm" appIcon="alert-circle"></svg><span>{{ m }}</span></p>
+  }
+</ng-template>

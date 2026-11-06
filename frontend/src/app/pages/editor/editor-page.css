@@ -1,0 +1,191 @@
+/* screens/editor.html <style> (verbatim) + Angular/CDK adaptations at the end */
+  /* ---------- page frame: fixed-height workspace on tablet/desktop, page scroll on mobile */
+  @media (min-width: 768px) {
+    .ed-app { height: 100vh; height: 100dvh; overflow: hidden; }
+    .ed-app > .fb-workspace { flex: 1 1 0; height: auto; min-height: 0; }
+  }
+
+  /* ---------- top bar */
+  .ed-header .fb-header__inner { gap: var(--space-3); }
+  .ed-titlebox { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: var(--space-3); }
+  .ed-title {
+    flex: 0 1 300px; min-width: 120px; height: 36px; padding: 0 var(--space-2);
+    font: inherit; font-size: var(--fs-16); font-weight: var(--fw-heading); letter-spacing: -0.01em; color: var(--text);
+    background: transparent; border: 1px solid transparent; border-radius: var(--radius-control); text-overflow: ellipsis;
+    transition: border-color var(--dur-hover) ease, background-color var(--dur-hover) ease;
+  }
+  .ed-title:hover { border-color: var(--border); }
+  .ed-title:focus { border-color: var(--border-control); background: var(--surface); }
+  .ed-meta { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+  .ed-meta > * { flex: none; }
+  .ed-issues { --btn-bg: var(--danger-soft); --btn-fg: var(--danger); --btn-bd: transparent; --btn-bg-hover: var(--danger-soft); --btn-bg-active: var(--danger-soft); }
+  .ed-issues:hover { border-color: var(--danger); }
+  .ed-issues-menu { width: min(340px, calc(100vw - 24px)); max-width: none; }
+  .ed-issue { align-items: flex-start; white-space: normal; padding-block: var(--space-2); }
+  .ed-issue .icon { color: var(--danger); margin-top: 1px; }
+  .ed-issue__txt { display: grid; gap: 2px; min-width: 0; }
+  .ed-issue__field { font-weight: 600; }
+  .ed-issue__msg { font-size: var(--fs-12); color: var(--text-2); line-height: 1.4; }
+  .ed-menu-group { padding: var(--space-1) var(--space-3) 0; font-size: var(--fs-12); color: var(--text-2); }
+  .ed-menu-note { padding: var(--space-2) var(--space-3); font-size: var(--fs-12); color: var(--text-2); white-space: normal; max-width: 240px; }
+  .ed-t-only { display: none !important; }
+  @media (min-width: 1200px) { .ed-tm-only { display: none !important; } }
+  @media (min-width: 768px) and (max-width: 1199.98px) { .ed-t-only { display: inline-flex !important; } }
+  @media (max-width: 1199.98px) {
+    .ed-meta--inline { display: none; }
+    .ed-title { flex: 1 1 auto; max-width: 420px; }
+  }
+  @media (max-width: 767.98px) {
+    .ed-title { min-width: 0; }
+    /* M: the publish label is never shortened — "Publish" (first publish) / "Publish changes".
+       Room comes from moving Preview into the bottom tool bar and dropping the button icon. */
+    #ed-publish > .icon { display: none; }
+    #ed-publish { flex: none; padding-inline: var(--space-3); }
+    .ed-header .fb-header__actions { gap: var(--space-1); }
+  }
+
+  /* status strip (tablet + mobile) */
+  .ed-statusbar { display: none; }
+  @media (max-width: 1199.98px) {
+    .ed-statusbar {
+      display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); min-height: 44px;
+      padding: var(--space-1) var(--page-pad); background: var(--surface); border-bottom: 1px solid var(--border);
+    }
+  }
+  @media (max-width: 767.98px) { .ed-statusbar { position: sticky; top: var(--header-h); z-index: var(--z-sticky); } }
+  .ed-app .fb-banner__inner { padding-inline: var(--page-pad); }
+
+  /* ---------- left palette */
+  .ed-left__body { padding: var(--space-4); }
+  .ed-left__title { margin-bottom: 2px; }
+  .ed-left__hint { margin-bottom: var(--space-4); }
+  .ed-sheet-head { display: none; }
+  .ed-sheet-head__row { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4); }
+  @media (min-width: 768px) and (max-width: 1199.98px) {
+    .ed-app > .fb-workspace { grid-template-columns: 96px minmax(0, 1fr); position: relative; }
+    .ed-left__title, .ed-left__hint { display: none; }
+    .ed-left__body { padding: var(--space-3) var(--space-2); }
+    .ed-left .fb-palette { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
+    .ed-left .fb-palette__group { text-align: center; margin-top: var(--space-3); }
+    .ed-left .fb-palette__item {
+      flex-direction: column; justify-content: center; gap: 4px; min-height: 60px; padding: var(--space-2) 4px;
+      font-size: var(--fs-12); line-height: 1.25; text-align: center;
+    }
+    /* properties: right overlay drawer */
+    .ed-right {
+      position: absolute; top: 0; right: 0; bottom: 0; width: min(340px, 100%); z-index: var(--z-sticky);
+      box-shadow: var(--shadow-3); display: none;
+    }
+    .ed-right.is-open { display: block; animation: fb-slide-in-right var(--dur-enter) var(--ease-out); }
+  }
+  @media (max-width: 767.98px) {
+    .ed-sheet-head { display: block; position: sticky; top: 0; z-index: 1; background: var(--surface); }
+    .ed-left__title { display: none; }
+    .ed-left__body { padding-top: 0; }
+  }
+
+  /* ---------- canvas */
+  .ed-page { position: relative; }
+  .ed-page--over { outline: 2px dashed var(--primary); outline-offset: 8px; border-radius: var(--radius-card); }
+  .ed-formhead {
+    --ed-accent: var(--_LT, var(--accent-l, var(--primary))) var(--_DK, var(--accent-d, var(--primary)));
+    display: grid; gap: var(--space-1); width: 100%; margin-bottom: var(--space-2); padding: var(--space-5);
+    font: inherit; text-align: left; color: var(--text); background: var(--surface);
+    border: 1px solid var(--border); border-top: 4px solid var(--ed-accent); border-radius: var(--radius-card); cursor: pointer;
+    transition: border-color var(--dur-hover) ease;
+  }
+  .ed-formhead:hover { border-color: var(--border-strong); border-top-color: var(--ed-accent); }
+  .ed-formhead__title { font-size: var(--fs-24); line-height: 1.25; font-weight: var(--fw-heading); letter-spacing: -0.01em; overflow-wrap: anywhere; }
+  .ed-formhead__desc { color: var(--text-2); overflow-wrap: anywhere; }
+  .ed-formhead__edit { display: inline-flex; align-items: center; gap: 6px; margin-top: var(--space-1); font-size: var(--fs-12); font-weight: 600; color: var(--text-2); }
+  .ed-formhead__edit .icon { width: 14px; height: 14px; }
+  .fb-block { cursor: pointer; }
+  .fb-block:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+  .fb-block__head { flex-wrap: wrap; }
+  .ed-block-type { display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; }
+  .ed-rules { grid-column: 2; }
+  .ed-page .fb-textarea { min-height: 72px; resize: none; }
+  .ed-page .fb-block__body .fb-h3 { overflow-wrap: anywhere; }
+  .ed-empty-opt { color: var(--text-placeholder); font-style: italic; }
+  .ed-ghost-anchor { position: relative; height: 0; }
+  .ed-ghost { position: absolute; top: -22px; left: calc(50% - 64px); pointer-events: none; z-index: 2; }
+  .ed-dropzone-empty { min-height: 260px; }
+  .ed-dropzone-empty .fb-h4 { color: var(--text); }
+  @media (max-width: 767.98px) {
+    .ed-canvas { padding-bottom: calc(var(--space-7) + 72px); }
+  }
+
+  /* ---------- right panel */
+  .ed-right__head { position: sticky; top: 0; z-index: 1; background: var(--surface); }
+  .ed-right__tabsrow { display: flex; align-items: center; gap: var(--space-2); padding: 0 var(--space-2) 0 var(--space-3); border-bottom: 1px solid var(--border); }
+  .ed-right__tabsrow .fb-tabs { flex: 1 1 auto; border-bottom: 0; align-self: stretch; }
+  .ed-props-head { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-4); border-bottom: 1px solid var(--border); }
+  .ed-props-icon { display: grid; place-content: center; width: 36px; height: 36px; flex: none; border-radius: var(--radius-control); background: var(--primary-soft); color: var(--primary); }
+  .ed-props-head__txt { min-width: 0; }
+  .ed-2col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+  .ed-note { display: flex; align-items: flex-start; gap: var(--space-2); padding: var(--space-3); font-size: var(--fs-14); color: var(--text-2); background: var(--surface-2); border-radius: var(--radius-control); }
+  .ed-note .icon { color: var(--success); flex: none; }
+  .ed-options { display: grid; gap: var(--space-2); }
+  .ed-options .fb-option-row + .fb-option-row { margin-top: 0; }
+  .fb-option-row.is-dragging { opacity: 0.5; }
+  .ed-addopt { justify-self: start; }
+  .ed-contrast-ok { display: flex; align-items: flex-start; gap: var(--space-2); font-size: var(--fs-14); color: var(--text-2); }
+  .ed-contrast-ok .icon { color: var(--success); flex: none; margin-top: 1px; }
+  .ed-accent-preview { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); border: 1px solid var(--border); }
+  .ed-accent-preview .fb-scale { flex: 0 0 auto; }
+  .ed-accent-preview .fb-scale__item { flex: 0 0 44px; }
+  .ed-resp { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }
+  .ed-resp-actions { justify-self: start; }
+
+  /* ---------- dialogs */
+  .ed-checklist { display: grid; gap: var(--space-2); padding: 0; list-style: none; }
+  .ed-checklist li { display: flex; align-items: flex-start; gap: var(--space-2); }
+  .ed-checklist .icon { color: var(--success); flex: none; margin-top: 2px; }
+  .ed-dlg-success .fb-dialog__icon { background: var(--success-soft); color: var(--success); }
+
+  /* ---------- mobile bottom toolbar + scrim */
+  .ed-mobilebar, .ed-scrim { display: none; }
+  @media (max-width: 767.98px) {
+    .ed-mobilebar {
+      display: flex; gap: var(--space-2); position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--z-sticky);
+      padding: var(--space-2) var(--page-pad) calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
+      background: var(--surface); border-top: 1px solid var(--border);
+    }
+    .ed-mobilebar .fb-btn { flex: 1 1 0; padding-inline: var(--space-2); }
+    .fb-workspace:has(> .is-open) .ed-scrim { display: block; position: fixed; inset: 0; z-index: calc(var(--z-drawer) - 1); background: var(--backdrop); }
+    body > .fb-toast-region:not(.is-static) { bottom: 76px; }
+  }
+
+/* ---------- Angular / CDK adaptations */
+app-editor-page { display: contents; }
+.ed-blocks { display: grid; gap: var(--space-3); }
+.ed-blocks--empty { display: block; }
+.ed-pal-list { display: contents; }
+.ed-pre { white-space: pre-line; overflow-wrap: anywhere; }
+.fb-block.cdk-drag-preview { box-shadow: var(--shadow-3); }
+.fb-block.cdk-drag-animating, .ed-blocks.cdk-drop-list-dragging .fb-block:not(.cdk-drag-placeholder) { transition: transform 200ms var(--ease-out); }
+.ed-blocks .fb-drop-indicator { margin: 0; }
+.ed-pal-list .fb-drop-indicator { display: none; }
+.ed-blocks--empty .fb-drop-indicator { display: none; }
+.fb-palette__item.is-lifted { box-shadow: var(--shadow-3); }
+.fb-props .fb-error { overflow-wrap: anywhere; }
+
+/* ---------- header fit: the status cluster never runs under the actions.
+   Worst case Closed · vN + Unpublished changes + Save failed/Retry + N issues must fit from 1200px up:
+   the title shrinks first, the long issues label only shows when there is room (≥1600),
+   and between 1200 and 1439 the Unpublished badge is icon-only (full text in title + screen-reader text). */
+.ed-header .fb-header__inner { min-width: 0; }
+.ed-titlebox { flex: 1 1 0; }
+.ed-title { flex: 1 1 300px; min-width: 96px; max-width: 300px; }
+.ed-meta--inline { flex: 0 1 auto; min-width: 0; }
+.ed-issues-long { display: none; }
+@media (min-width: 1600px) { .ed-issues-long { display: inline; } }
+@media (min-width: 1200px) and (max-width: 1439.98px) {
+  .ed-meta--inline .ed-unpub-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .ed-meta--inline .fb-badge--unpublished { gap: 0; padding-inline: 6px; }
+  /* the Save failed banner below the header always offers "Retry now" */
+  .ed-meta--inline .fb-save__retry { display: none; }
+  .ed-preview-label { display: none; }
+}
+@media (max-width: 1199.98px) { .ed-title { max-width: 420px; } }
+@media (max-width: 767.98px) { .ed-title { min-width: 0; } }

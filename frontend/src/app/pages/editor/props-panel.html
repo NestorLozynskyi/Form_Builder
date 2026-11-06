@@ -1,0 +1,174 @@
+@if (s.selectedBlock(); as b) {
+  @let t = meta[b.type];
+  <div class="ed-props-head">
+    <span class="ed-props-icon"><svg [appIcon]="t.icon"></svg></span>
+    <div class="ed-props-head__txt">
+      <h2 class="fb-h4">{{ t.name }}</h2>
+      <p class="fb-caption">{{ t.input ? 'Input field' : 'Content block' }} · {{ index() + 1 }} of {{ s.blocks().length }} on the form</p>
+    </div>
+  </div>
+
+  @if (!t.input) {
+    <section class="fb-props__section">
+      <h3 class="fb-props__title">Content</h3>
+      <div class="fb-field">
+        @if (b.type === 'heading') {
+          <label class="fb-label" for="p-text">Heading text</label>
+          <p class="fb-help" id="p-text-help">Shown as a section title. Respondents don’t answer it.</p>
+          <input class="fb-input" type="text" id="p-text" aria-describedby="p-text-help" maxlength="200" [value]="b.text ?? ''" (input)="text(b, 'text', $event)" />
+        } @else {
+          <label class="fb-label" for="p-text">Text</label>
+          <p class="fb-help" id="p-text-help">Shown as a paragraph between questions. Respondents don’t answer it.</p>
+          <textarea class="fb-input fb-textarea" rows="4" id="p-text" aria-describedby="p-text-help" maxlength="2000" [value]="b.text ?? ''" (input)="text(b, 'text', $event)"></textarea>
+        }
+      </div>
+    </section>
+  } @else {
+    <section class="fb-props__section">
+      <h3 class="fb-props__title">Field</h3>
+      <div class="fb-field" [class.is-invalid]="errs()['label']">
+        <label class="fb-label" for="p-label">Label</label>
+        <input class="fb-input" type="text" id="p-label" maxlength="500" [value]="b.label ?? ''" (input)="text(b, 'label', $event)"
+          [attr.aria-invalid]="errs()['label'] ? 'true' : null" [attr.aria-describedby]="errs()['label'] ? 'p-label-err' : null" />
+        @if (errs()['label']; as m) { <p class="fb-error" id="p-label-err"><svg class="icon--sm" appIcon="alert-circle"></svg>{{ m }}</p> }
+      </div>
+      <div class="fb-field">
+        <label class="fb-label" for="p-help">Help text <span class="fb-label__opt">(optional)</span></label>
+        <input class="fb-input" type="text" id="p-help" placeholder="Shown under the label" maxlength="1000" [value]="b.help ?? ''" (input)="text(b, 'help', $event)" />
+      </div>
+      <label class="fb-switch-row"><input type="checkbox" role="switch" class="fb-switch" [checked]="!!b.required" (change)="check(b, 'required', $event)" /> Required</label>
+    </section>
+
+    @switch (b.type) {
+      @case ('short') { <ng-container *ngTemplateOutlet="textRules; context: { $implicit: b }" /> }
+      @case ('long') { <ng-container *ngTemplateOutlet="textRules; context: { $implicit: b }" /> }
+      @case ('email') {
+        <section class="fb-props__section">
+          <h3 class="fb-props__title">Validation</h3>
+          <p class="ed-note"><svg appIcon="check-circle"></svg><span>Checked for a valid email format, like name&#64;example.com. No extra settings needed.</span></p>
+        </section>
+      }
+      @case ('number') {
+        <section class="fb-props__section">
+          <h3 class="fb-props__title">Validation</h3>
+          <div class="ed-2col">
+            <div class="fb-field"><label class="fb-label" for="p-min">Minimum</label>
+              <input class="fb-input" type="number" inputmode="numeric" id="p-min" placeholder="None" [value]="b.min ?? ''" (input)="num(b, 'min', $event)" [attr.aria-invalid]="errs()['range'] ? 'true' : null" [attr.aria-describedby]="errs()['range'] ? 'p-range-err' : null" /></div>
+            <div class="fb-field"><label class="fb-label" for="p-max">Maximum</label>
+              <input class="fb-input" type="number" inputmode="numeric" id="p-max" placeholder="None" [value]="b.max ?? ''" (input)="num(b, 'max', $event)" [attr.aria-invalid]="errs()['range'] ? 'true' : null" [attr.aria-describedby]="errs()['range'] ? 'p-range-err' : null" /></div>
+          </div>
+          @if (errs()['range']; as m) { <p class="fb-error" id="p-range-err"><svg class="icon--sm" appIcon="alert-circle"></svg>{{ m }}</p> }
+          <label class="fb-switch-row"><input type="checkbox" role="switch" class="fb-switch" [checked]="!!b.integer" (change)="check(b, 'integer', $event)" /> Whole numbers only</label>
+        </section>
+      }
+      @case ('date') {
+        <section class="fb-props__section">
+          <h3 class="fb-props__title">Date range</h3>
+          <div class="fb-field"><label class="fb-label" for="p-earliest">Earliest date</label>
+            <p class="fb-help" id="p-earliest-help">Leave empty for no limit.</p>
+            <input class="fb-input" type="date" id="p-earliest" [value]="b.earliest ?? ''" (input)="text(b, 'earliest', $event)" (change)="text(b, 'earliest', $event)"
+              [attr.aria-invalid]="errs()['dates'] ? 'true' : null" [attr.aria-describedby]="describedBy('p-earliest-help', errs()['dates'] && 'p-dates-err')" /></div>
+          <div class="fb-field"><label class="fb-label" for="p-latestMode">Latest date</label>
+            <div class="fb-select"><select class="fb-input" id="p-latestMode" (change)="latestMode(b, $event)">
+              <option value="none" [selected]="!b.latestMode || b.latestMode === 'none'">No limit</option>
+              <option value="today" [selected]="b.latestMode === 'today'">Today (the day they answer)</option>
+              <option value="date" [selected]="b.latestMode === 'date'">Specific date</option>
+            </select></div></div>
+          @if (b.latestMode === 'date') {
+            <div class="fb-field"><label class="fb-label" for="p-latest">Latest specific date</label>
+              <input class="fb-input" type="date" id="p-latest" [value]="b.latest ?? ''" (input)="text(b, 'latest', $event)" (change)="text(b, 'latest', $event)"
+                [attr.aria-invalid]="errs()['dates'] ? 'true' : null" [attr.aria-describedby]="errs()['dates'] ? 'p-dates-err' : null" /></div>
+          }
+          @if (errs()['dates']; as m) { <p class="fb-error" id="p-dates-err"><svg class="icon--sm" appIcon="alert-circle"></svg>{{ m }}</p> }
+        </section>
+      }
+      @case ('scale') {
+        <section class="fb-props__section">
+          <h3 class="fb-props__title">Scale</h3>
+          <div class="ed-2col">
+            <div class="fb-field"><label class="fb-label" for="p-scale-min">From</label><input class="fb-input" id="p-scale-min" value="1" disabled aria-describedby="p-scale-min-help" /><p class="fb-help" id="p-scale-min-help">Always starts at 1.</p></div>
+            <div class="fb-field"><label class="fb-label" for="p-scale-max">To</label>
+              <div class="fb-select"><select class="fb-input" id="p-scale-max" (change)="scaleMax(b, $event)">
+                @for (n of scaleTo; track n) { <option [value]="n" [selected]="(b.max ?? 5) === n">{{ n }}</option> }
+              </select></div></div>
+          </div>
+          <div class="fb-field"><label class="fb-label" for="p-left">Left label <span class="fb-label__opt">(optional)</span></label>
+            <input class="fb-input" type="text" id="p-left" placeholder="e.g. Not at all" maxlength="60" [value]="b.leftLabel ?? ''" (input)="text(b, 'leftLabel', $event)" /></div>
+          <div class="fb-field"><label class="fb-label" for="p-right">Right label <span class="fb-label__opt">(optional)</span></label>
+            <input class="fb-input" type="text" id="p-right" placeholder="e.g. Very satisfied" maxlength="60" [value]="b.rightLabel ?? ''" (input)="text(b, 'rightLabel', $event)" /></div>
+        </section>
+      }
+      @default {
+        <section class="fb-props__section">
+          <h3 class="fb-props__title">Options</h3>
+          <div class="ed-options" cdkDropList (cdkDropListDropped)="dropOption(b, $event)" cdkDropListLockAxis="y">
+            @for (o of b.options ?? []; track $index; let i = $index) {
+              <div cdkDrag class="ed-opt">
+                <div class="fb-option-row" [class.is-invalid]="errs()['opt' + i]">
+                  <button type="button" class="fb-block__handle" cdkDragHandle [id]="'p-opt-grip-' + i" [attr.aria-label]="'Move option ' + (i + 1) + '. Drag, or press the up and down arrow keys.'" (keydown)="optionKey(b, i, $event)"><svg appIcon="grip-vertical"></svg></button>
+                  <input class="fb-input fb-input--sm" type="text" [id]="'p-opt-' + i" [value]="o" [placeholder]="'Option ' + (i + 1)" [attr.aria-label]="'Option ' + (i + 1)" maxlength="200"
+                    [attr.aria-invalid]="errs()['opt' + i] ? 'true' : null" [attr.aria-describedby]="errs()['opt' + i] ? 'p-opt' + i + '-err' : null" (input)="option(b, i, $event)" />
+                  <button type="button" class="fb-btn fb-btn--ghost fb-btn--icon fb-btn--sm" [attr.aria-label]="'Remove option ' + (i + 1)" (click)="removeOption(b, i)"><svg appIcon="x"></svg></button>
+                </div>
+                @if (errs()['opt' + i]; as m) { <p class="fb-error" [id]="'p-opt' + i + '-err'"><svg class="icon--sm" appIcon="alert-circle"></svg>{{ m }}</p> }
+              </div>
+            }
+          </div>
+          @if (errs()['opts']; as m) { <p class="fb-error" id="p-opts-err"><svg class="icon--sm" appIcon="alert-circle"></svg>{{ m }}</p> }
+          <button type="button" class="fb-btn fb-btn--ghost fb-btn--sm ed-addopt" id="p-addopt" [disabled]="(b.options ?? []).length >= 50" (click)="addOption(b)"><svg appIcon="plus"></svg>Add option</button>
+        </section>
+        @if (b.type === 'checkbox') {
+          <section class="fb-props__section">
+            <h3 class="fb-props__title">Selection limits</h3>
+            <div class="ed-2col">
+              <div class="fb-field"><label class="fb-label" for="p-minSel">Minimum selected</label>
+                <input class="fb-input" type="number" inputmode="numeric" min="0" id="p-minSel" placeholder="None" [value]="b.minSelected ?? ''" (input)="num(b, 'minSelected', $event)" [attr.aria-invalid]="errs()['sel'] ? 'true' : null" [attr.aria-describedby]="errs()['sel'] ? 'p-sel-err' : null" /></div>
+              <div class="fb-field"><label class="fb-label" for="p-maxSel">Maximum selected</label>
+                <input class="fb-input" type="number" inputmode="numeric" min="0" id="p-maxSel" placeholder="None" [value]="b.maxSelected ?? ''" (input)="num(b, 'maxSelected', $event)" [attr.aria-invalid]="errs()['sel'] ? 'true' : null" [attr.aria-describedby]="errs()['sel'] ? 'p-sel-err' : null" /></div>
+            </div>
+            @if (errs()['sel']; as m) { <p class="fb-error" id="p-sel-err"><svg class="icon--sm" appIcon="alert-circle"></svg>{{ m }}</p> }
+          </section>
+        }
+      }
+    }
+  }
+
+  <section class="fb-props__section">
+    <h3 class="fb-props__title">Actions</h3>
+    <div class="fb-btn-group">
+      <button type="button" class="fb-btn fb-btn--secondary fb-btn--sm" (click)="s.duplicate(b.id)"><svg appIcon="duplicate"></svg>Duplicate</button>
+      <button type="button" class="fb-btn fb-btn--danger-ghost fb-btn--sm" (click)="s.remove(b.id)"><svg appIcon="trash"></svg>Delete {{ t.input ? 'field' : 'block' }}</button>
+    </div>
+  </section>
+} @else {
+  <div class="fb-empty fb-empty--compact">
+    <span class="fb-empty__icon"><svg appIcon="sliders"></svg></span>
+    <p class="fb-empty__title">No field selected</p>
+    <p class="fb-empty__text">{{ s.blocks().length ? 'Select a field on the canvas to edit its label, help text and validation.' : 'Add a field from the palette, then select it to edit its properties.' }}</p>
+  </div>
+}
+
+<ng-template #textRules let-b>
+  <section class="fb-props__section">
+    <h3 class="fb-props__title">Validation</h3>
+    <div class="ed-2col">
+      <div class="fb-field"><label class="fb-label" for="p-minLength">Min length</label>
+        <input class="fb-input" type="number" inputmode="numeric" min="0" id="p-minLength" placeholder="None" [value]="b.minLength ?? ''" (input)="num(b, 'minLength', $event)" [attr.aria-invalid]="errs()['len'] ? 'true' : null" [attr.aria-describedby]="errs()['len'] ? 'p-len-err' : null" /></div>
+      <div class="fb-field"><label class="fb-label" for="p-maxLength">Max length</label>
+        <input class="fb-input" type="number" inputmode="numeric" min="0" id="p-maxLength" placeholder="None" [value]="b.maxLength ?? ''" (input)="num(b, 'maxLength', $event)" [attr.aria-invalid]="errs()['len'] ? 'true' : null" [attr.aria-describedby]="errs()['len'] ? 'p-len-err' : null" /></div>
+    </div>
+    @if (errs()['len']; as m) { <p class="fb-error" id="p-len-err"><svg class="icon--sm" appIcon="alert-circle"></svg>{{ m }}</p> }
+    <div class="fb-field" [class.is-invalid]="errs()['pattern']">
+      <label class="fb-label" for="p-pattern">Custom pattern <span class="fb-label__opt">(optional)</span></label>
+      <p class="fb-help" id="p-pattern-help">Answers must match this regular expression. Nested repeats like (a+)+ aren’t allowed.</p>
+      <input class="fb-input fb-input--mono" type="text" id="p-pattern" spellcheck="false" autocapitalize="off" autocomplete="off" maxlength="200" placeholder="e.g. ^[A-Z]{{ '{' }}2{{ '}' }}-[0-9]{{ '{' }}4{{ '}' }}$"
+        [value]="b.pattern ?? ''" (input)="text(b, 'pattern', $event)" [attr.aria-invalid]="errs()['pattern'] ? 'true' : null" [attr.aria-describedby]="describedBy('p-pattern-help', errs()['pattern'] && 'p-pattern-err')" />
+      @if (errs()['pattern']; as m) { <p class="fb-error" id="p-pattern-err"><svg class="icon--sm" appIcon="alert-circle"></svg>{{ m }}</p> }
+    </div>
+    <div class="fb-field">
+      <label class="fb-label" for="p-patternMessage">Error message</label>
+      <p class="fb-help" id="p-patternMessage-help">Shown to respondents when the answer doesn’t match the pattern.</p>
+      <input class="fb-input" type="text" id="p-patternMessage" aria-describedby="p-patternMessage-help" maxlength="200" placeholder="e.g. Use the format AB-1234" [value]="b.patternMessage ?? ''" (input)="text(b, 'patternMessage', $event)" />
+    </div>
+  </section>
+</ng-template>

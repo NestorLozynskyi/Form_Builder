@@ -1,0 +1,162 @@
+# Form Builder API examples (captured through Caddy, 2026-11-06). Cookies and some headers omitted; X-XSRF-TOKEN is sent on mutating requests.
+
+### GET /api/health
+--
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+
+{"status":"healthy","database":"up"}
+
+
+### GET /api/auth/session
+--
+HTTP/1.1 200 OK
+Cache-Control: no-cache, no-store
+Content-Type: application/json; charset=utf-8
+Pragma: no-cache
+Transfer-Encoding: chunked
+
+{"user":null}
+
+
+### POST /api/auth/sign-up
+{"email":"bad","password":"short"}
+--
+HTTP/1.1 400 Bad Request
+Content-Type: application/problem+json
+Transfer-Encoding: chunked
+
+{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"instance":"/api/auth/sign-up","errors":{"email":["This email address is incomplete. Use the format name@example.com."],"password":["Password is too short (5 of 8 characters). Add 3 more characters."]},"traceId":"0HNPRL544I4GA:00000004"}
+
+
+### POST /api/auth/sign-up
+{"email":"docs17455@example.com","password":"Password-123"}
+--
+HTTP/1.1 201 Created
+Cache-Control: no-cache,no-store
+Content-Type: application/json; charset=utf-8
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Location: /api/auth/session
+Pragma: no-cache
+Transfer-Encoding: chunked
+
+{"user":{"email":"docs17455@example.com"}}
+
+
+### PUT /api/forms/01a1ae97-b19e-7da8-9b48-e97a78be1b28/draft
+{"title":"Docs","description":"","successMessage":"Thanks!","accent":"teal","blocks":[{"id":"name","type":"short","label":"Name","required":true,"pattern":"(a+)+$"}]}
+--
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+
+{"id":"01a1ae97-b19e-7da8-9b48-e97a78be1b28","title":"Docs","status":"draft","liveVersion":null,"hasUnpublishedChanges":false,"responseCount":0,"updatedAt":"2026-11-06T02:02:19.452333Z","publicId":null,"draft":{"title":"Docs","description":"","successMessage":"Thanks!","accent":"teal","blocks":[{"id":"name","type":"short","label":"Name","help":null,"required":true,"minLength":null,"maxLength":null,"pattern":"(a+)+$","patternMessage":null,"min":null,"max":null,"integer":false,"earliest":null,"latestMode":null,"latest":null,"options":null,"minSelected":null,"maxSelected":null,"leftLabel":null,"rightLabel":null,"text":null}]},"liveSchema":null,"publishBlocker":"Fix 1 issue to publish.","versions":[],"createdAt":"2026-11-06T02:02:19.422574Z"}
+
+
+### POST /api/forms/01a1ae97-b19e-7da8-9b48-e97a78be1b28/publish
+--
+HTTP/1.1 400 Bad Request
+Content-Type: application/problem+json
+Transfer-Encoding: chunked
+
+{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"instance":"/api/forms/01a1ae97-b19e-7da8-9b48-e97a78be1b28/publish","errors":{"publish":["Fix 1 issue to publish."]},"traceId":"0HNPRL544I4GA:00000008"}
+
+
+### PUT /api/forms/01a1ae97-b19e-7da8-9b48-e97a78be1b28/draft
+{"title":"Docs","description":"","successMessage":"Thanks!","accent":"teal","blocks":[{"id":"name","type":"short","label":"Name","required":true,"minLength":2}]}
+--
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+
+{"id":"01a1ae97-b19e-7da8-9b48-e97a78be1b28","title":"Docs","status":"draft","liveVersion":null,"hasUnpublishedChanges":false,"responseCount":0,"updatedAt":"2026-11-06T02:02:19.476029Z","publicId":null,"draft":{"title":"Docs","description":"","successMessage":"Thanks!","accent":"teal","blocks":[{"id":"name","type":"short","label":"Name","help":null,"required":true,"minLength":2,"maxLength":null,"pattern":null,"patternMessage":null,"min":null,"max":null,"integer":false,"earliest":null,"latestMode":null,"latest":null,"options":null,"minSelected":null,"maxSelected":null,"leftLabel":null,"rightLabel":null,"text":null}]},"liveSchema":null,"publishBlocker":null,"versions":[],"createdAt":"2026-11-06T02:02:19.422574Z"}
+
+
+### GET /api/public/forms/BjMfcPPK5awOBnrEfHqw0g
+--
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+X-Robots-Tag: noindex, nofollow
+Transfer-Encoding: chunked
+
+{"publicId":"BjMfcPPK5awOBnrEfHqw0g","version":1,"status":"open","schema":{"title":"Docs","description":"","successMessage":"Thanks!","accent":"teal","blocks":[{"id":"name","type":"short","label":"Name","help":null,"required":true,"minLength":2,"maxLength":null,"pattern":null,"patternMessage":null,"min":null,"max":null,"integer":false,"earliest":null,"latestMode":null,"latest":null,"options":null,"minSelected":null,"maxSelected":null,"leftLabel":null,"rightLabel":null,"text":null}]}}
+
+
+### POST /api/public/forms/BjMfcPPK5awOBnrEfHqw0g/responses
+{"version":1,"answers":{"name":"A"},"website":""}
+--
+HTTP/1.1 400 Bad Request
+Content-Type: application/problem+json
+X-Robots-Tag: noindex, nofollow
+Transfer-Encoding: chunked
+
+{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"instance":"/api/public/forms/BjMfcPPK5awOBnrEfHqw0g/responses","errors":{"name":["Use at least 2 characters — you’re at 1."]},"traceId":"0HNPRL544I4GA:0000000C"}
+
+
+### POST /api/public/forms/BjMfcPPK5awOBnrEfHqw0g/responses
+{"version":1,"answers":{"name":"=1+1, \"quoted\""},"website":""}
+--
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+X-Robots-Tag: noindex, nofollow
+Transfer-Encoding: chunked
+
+{"number":1}
+
+
+### GET /api/forms/01a1ae97-b19e-7da8-9b48-e97a78be1b28/responses?page=1&pageSize=10
+--
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+
+{"total":1,"page":1,"pageSize":10,"items":[{"id":"01a1ae97-b20a-7f94-87ea-391ca5914a5a","number":1,"submittedAt":"2026-11-06T02:02:19.530887Z","version":1,"answers":{"name":"=1+1, \"quoted\""}}]}
+
+
+### GET /api/forms/01a1ae97-b19e-7da8-9b48-e97a78be1b28/responses/export.csv
+--
+HTTP/1.1 200 OK
+Content-Disposition: attachment; filename="docs-responses.csv"
+Content-Type: text/csv; charset=utf-8
+Transfer-Encoding: chunked
+
+﻿Response,Submitted (UTC),Version,Name
+1,2026-11-06 02:02:19,1,"'=1+1, ""quoted"""
+
+
+### POST /api/forms/01a1ae97-b19e-7da8-9b48-e97a78be1b28/close
+--
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+
+{"id":"01a1ae97-b19e-7da8-9b48-e97a78be1b28","title":"Docs","status":"closed","liveVersion":1,"hasUnpublishedChanges":false,"responseCount":1,"updatedAt":"2026-11-06T02:02:19.564439Z","publicId":"BjMfcPPK5awOBnrEfHqw0g","draft":{"title":"Docs","description":"","successMessage":"Thanks!","accent":"teal","blocks":[{"id":"name","type":"short","label":"Name","help":null,"required":true,"minLength":2,"maxLength":null,"pattern":null,"patternMessage":null,"min":null,"max":null,"integer":false,"earliest":null,"latestMode":null,"latest":null,"options":null,"minSelected":null,"maxSelected":null,"leftLabel":null,"rightLabel":null,"text":null}]},"liveSchema":{"title":"Docs","description":"","successMessage":"Thanks!","accent":"teal","blocks":[{"id":"name","type":"short","label":"Name","help":null,"required":true,"minLength":2,"maxLength":null,"pattern":null,"patternMessage":null,"min":null,"max":null,"integer":false,"earliest":null,"latestMode":null,"latest":null,"options":null,"minSelected":null,"maxSelected":null,"leftLabel":null,"rightLabel":null,"text":null}]},"publishBlocker":null,"versions":[{"number":1,"publishedAt":"2026-11-06T02:02:19.486751Z","responseCount":1}],"createdAt":"2026-11-06T02:02:19.422574Z"}
+
+
+### GET /api/public/forms/BjMfcPPK5awOBnrEfHqw0g
+--
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+X-Robots-Tag: noindex, nofollow
+Transfer-Encoding: chunked
+
+{"publicId":"BjMfcPPK5awOBnrEfHqw0g","status":"closed","title":"Docs","accent":"teal"}
+
+
+### GET /api/public/forms/AAAAAAAAAAAAAAAAAAAAAA
+--
+HTTP/1.1 404 Not Found
+Content-Type: application/problem+json
+X-Robots-Tag: noindex, nofollow
+Transfer-Encoding: chunked
+
+{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Form not available","status":404,"detail":"This form doesn’t exist or isn’t published.","instance":"/api/public/forms/AAAAAAAAAAAAAAAAAAAAAA","traceId":"0HNPRL544I4GA:00000012"}
+
+
+### DELETE /api/forms/01a1ae97-b19e-7da8-9b48-e97a78be1b28
+--
+HTTP/1.1 204 No Content
+
+
+

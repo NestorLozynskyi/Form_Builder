@@ -1,0 +1,269 @@
+@if (missing()) {
+  <app-not-found />
+} @else if (loadError(); as err) {
+  <div class="fb-app">
+    <main class="fb-main"><div class="fb-container fb-container--narrow"><app-system-error [offline]="err.isNetwork" [reference]="$any(err.problem)['traceId'] ?? null" (retry)="load()" /></div></main>
+  </div>
+} @else if (s.draft(); as d) {
+<div class="fb-app ed-app">
+  <header class="fb-header ed-header">
+    <div class="fb-header__inner">
+      <a class="fb-btn fb-btn--ghost fb-btn--icon" routerLink="/forms" aria-label="Back to My forms" data-tooltip="My forms" data-tooltip-pos="bottom"><svg appIcon="arrow-left"></svg></a>
+      <div class="ed-titlebox">
+        <input class="ed-title" id="ed-title" type="text" aria-label="Form title" autocomplete="off" spellcheck="false" maxlength="200" [value]="d.title" (input)="onTitle($event)" />
+        <div class="ed-meta ed-meta--inline"><app-editor-meta (jump)="jump($event)" /></div>
+      </div>
+      <div class="fb-header__actions">
+        <button type="button" class="fb-btn fb-btn--ghost fb-btn--icon ed-t-only" aria-controls="ed-right" [attr.aria-expanded]="s.panel() === 'right'" aria-label="Properties" data-tooltip="Properties" data-tooltip-pos="bottom" (click)="openPanel('right')"><svg appIcon="panel-right"></svg></button>
+        <button type="button" class="fb-btn fb-btn--secondary fb-hide-mobile" aria-label="Preview" (click)="preview()"><svg appIcon="eye"></svg><span class="fb-hide-tablet-down ed-preview-label">Preview</span></button>
+        <button #publishBtn type="button" class="fb-btn fb-btn--primary" id="ed-publish" data-tooltip-pos="bottom" [attr.aria-label]="publishLabel()"
+          [attr.aria-disabled]="s.blocker() ? 'true' : null" [attr.data-tooltip]="s.blocker() || null" [attr.aria-describedby]="s.blocker() ? 'ed-publish-reason' : null" (click)="clickPublish()">
+          <svg appIcon="upload-cloud"></svg><span class="ed-pub-long">{{ publishLabel() }}</span>
+        </button>
+        <span class="fb-sr-only" id="ed-publish-reason">{{ s.blocker() }}</span>
+        <div class="fb-menu-anchor">
+          <button type="button" class="fb-btn fb-btn--ghost fb-btn--icon" appMenuTrigger aria-controls="ed-more" aria-label="More actions"><svg appIcon="more-vertical"></svg></button>
+          <div class="fb-menu" role="menu" id="ed-more" aria-label="More actions" hidden>
+            @if (s.status() === 'draft') {
+              <p class="ed-menu-note">Publish the form to share its link and collect responses.</p>
+            } @else {
+              <a class="fb-menu__item" role="menuitem" [routerLink]="['/forms', id(), 'responses']"><svg appIcon="inbox"></svg>View responses<span class="fb-counter" style="margin-left:auto">{{ s.form()?.responseCount?.toLocaleString('en-US') }}</span></a>
+              <button type="button" class="fb-menu__item" role="menuitem" (click)="copyLink()"><svg appIcon="link"></svg>Copy public link</button>
+              <hr class="fb-menu__sep" />
+              @if (s.status() === 'published') {
+                <button type="button" class="fb-menu__item" role="menuitem" (click)="askClose()"><svg appIcon="lock"></svg>Close responses</button>
+              } @else {
+                <button type="button" class="fb-menu__item" role="menuitem" (click)="reopen()"><svg appIcon="unlock"></svg>Reopen responses</button>
+              }
+            }
+            <div class="fb-show-mobile">
+              <hr class="fb-menu__sep" />
+              <p class="ed-menu-group">Theme</p>
+              <button type="button" class="fb-menu__item" role="menuitemradio" [attr.aria-checked]="theme.pref() === 'light'" (click)="setTheme('light'); $event.stopPropagation()"><svg appIcon="sun"></svg>Light</button>
+              <button type="button" class="fb-menu__item" role="menuitemradio" [attr.aria-checked]="theme.pref() === 'dark'" (click)="setTheme('dark'); $event.stopPropagation()"><svg appIcon="moon"></svg>Dark</button>
+              <button type="button" class="fb-menu__item" role="menuitemradio" [attr.aria-checked]="theme.pref() === 'system'" (click)="setTheme('system'); $event.stopPropagation()"><svg appIcon="monitor"></svg>System</button>
+            </div>
+            <div class="fb-show-tablet-down">
+              <hr class="fb-menu__sep" />
+              <div class="fb-menu__header"><span class="fb-menu__label">Signed in as</span><span class="fb-menu__email">{{ auth.user()?.email }}</span></div>
+              <button type="button" class="fb-menu__item" role="menuitem" (click)="auth.signOut()"><svg appIcon="log-out"></svg>Sign out</button>
+            </div>
+          </div>
+        </div>
+        <span class="fb-hide-mobile"><app-theme-toggle /></span>
+        <span class="fb-hide-tablet-down"><app-account-menu /></span>
+      </div>
+    </div>
+  </header>
+
+  <div class="ed-statusbar" role="group" aria-label="Form status"><app-editor-meta (jump)="jump($event)" /></div>
+
+  @if (s.status() === 'closed') {
+    <div class="fb-banner fb-banner--warning">
+      <div class="fb-banner__inner">
+        <svg class="fb-alert__icon" appIcon="lock"></svg>
+        <p class="fb-alert__text"><strong>Responses are closed.</strong> People who open the link see a closed message.</p>
+        <div class="fb-alert__actions"><button type="button" class="fb-btn fb-btn--secondary fb-btn--sm" (click)="reopen()"><svg appIcon="unlock"></svg>Reopen responses</button></div>
+      </div>
+    </div>
+  }
+  @if (s.save() === 'failed') {
+    <div class="fb-banner fb-banner--danger" role="alert">
+      <div class="fb-banner__inner">
+        <svg class="fb-alert__icon" appIcon="cloud-off"></svg>
+        <p class="fb-alert__text"><strong>Save failed.</strong> Changes aren’t saved. Check your connection — we’ll keep retrying.</p>
+        <div class="fb-alert__actions"><button type="button" class="fb-btn fb-btn--secondary fb-btn--sm" (click)="s.retryNow()"><svg appIcon="refresh"></svg>Retry now</button></div>
+      </div>
+    </div>
+  }
+
+  <div class="fb-workspace" cdkDropListGroup>
+    <!-- palette -->
+    <aside class="fb-workspace__left ed-left" id="ed-left" aria-label="Add fields" [class.is-open]="s.panel() === 'left'">
+      <div class="ed-sheet-head">
+        <div class="fb-sheet__handle"></div>
+        <div class="ed-sheet-head__row">
+          <h2 class="fb-sheet__title">Add field</h2>
+          <button type="button" class="fb-btn fb-btn--ghost fb-btn--icon fb-btn--sm" aria-label="Close" (click)="closePanels()"><svg appIcon="x"></svg></button>
+        </div>
+      </div>
+      <div class="ed-left__body">
+        <h2 class="fb-h4 ed-left__title">Add fields</h2>
+        <p class="fb-caption ed-left__hint"><span class="fb-hide-mobile">Drag onto the canvas, or click to add at the end.</span><span class="fb-show-mobile">Tap a field to add it to the end of the form.</span></p>
+        <div class="fb-palette" id="ed-palette">
+          <p class="fb-palette__group">Input fields</p>
+          <ng-container *ngTemplateOutlet="paletteList; context: { $implicit: inputTypes, id: 'pal-inputs' }" />
+          <p class="fb-palette__group">Content blocks</p>
+          <ng-container *ngTemplateOutlet="paletteList; context: { $implicit: contentTypes, id: 'pal-content' }" />
+        </div>
+      </div>
+    </aside>
+
+    <!-- canvas -->
+    <main class="fb-workspace__main" id="ed-main" aria-label="Form canvas">
+      <div class="fb-canvas ed-canvas" id="ed-canvas">
+        <div class="fb-canvas__page ed-page" id="ed-page" [appAccent]="d.accent" [class.ed-page--over]="dragging() && d.blocks.length > 0">
+          <button type="button" class="ed-formhead" aria-label="Form title and description. Open form settings" (click)="openSettings()">
+            <span class="ed-formhead__title">{{ d.title || 'Untitled form' }}</span>
+            <span class="ed-formhead__desc">{{ d.description || 'No description' }}</span>
+            <span class="ed-formhead__edit"><svg appIcon="settings"></svg>Form settings</span>
+          </button>
+
+          <div class="ed-blocks" cdkDropList id="ed-blocks" [cdkDropListData]="d.blocks" (cdkDropListDropped)="dropOnCanvas($event)" [class.ed-blocks--empty]="d.blocks.length === 0">
+            @for (b of d.blocks; track b.id; let i = $index, last = $last) {
+              @let errs = s.issuesByBlock().get(b.id) ?? [];
+              <article class="fb-block" cdkDrag [cdkDragData]="b" [cdkDragStartDelay]="{ touch: 250, mouse: 0 }" (cdkDragStarted)="dragStarted()" (cdkDragEnded)="dragEnded()"
+                [attr.data-id]="b.id" tabindex="0" [class.is-selected]="b.id === s.selected()" [class.is-invalid]="errs.length > 0" [attr.aria-label]="issueLabel(b)"
+                (click)="selectBlock(b, $event)" (keydown)="blockKey(b, $event)">
+                <div *cdkDragPlaceholder class="fb-drop-indicator" role="presentation"></div>
+                <button type="button" class="fb-block__handle" data-act="grip" cdkDragHandle [attr.aria-label]="'Reorder ' + titleOf(b) + '. Drag, or press the up and down arrow keys.'" (keydown)="gripKey(b, i, $event)" (click)="selectBlock(b)"><svg appIcon="grip-vertical"></svg></button>
+                <div class="fb-block__head">
+                  <span class="ed-block-type"><span class="fb-block__type"><svg [appIcon]="meta[b.type].icon"></svg>{{ meta[b.type].name }}</span>
+                    @if (errs.length) { <span class="fb-badge fb-badge--danger fb-badge--sm"><svg appIcon="alert-circle"></svg>{{ errs.length }} {{ errs.length === 1 ? 'issue' : 'issues' }}</span> }
+                  </span>
+                  <div class="fb-block__toolbar">
+                    <button type="button" class="fb-btn fb-btn--ghost fb-btn--icon fb-btn--sm" data-act="up" aria-label="Move up" [disabled]="i === 0" (click)="move(b, i - 1, 'up')"><svg appIcon="arrow-up"></svg></button>
+                    <button type="button" class="fb-btn fb-btn--ghost fb-btn--icon fb-btn--sm" data-act="down" aria-label="Move down" [disabled]="last" (click)="move(b, i + 1, 'down')"><svg appIcon="arrow-down"></svg></button>
+                    <button type="button" class="fb-btn fb-btn--ghost fb-btn--icon fb-btn--sm" data-act="dup" aria-label="Duplicate" (click)="duplicate(b)"><svg appIcon="duplicate"></svg></button>
+                    <button type="button" class="fb-btn fb-btn--danger-ghost fb-btn--icon fb-btn--sm" data-act="del" aria-label="Delete" (click)="remove(b)"><svg appIcon="trash"></svg></button>
+                  </div>
+                </div>
+                <div class="fb-block__body" aria-hidden="true" inert><app-block-preview [block]="b" /></div>
+                @if (rules(b); as r) { <p class="fb-caption ed-rules">{{ r }}</p> }
+                @for (x of errs; track x.key) { <p class="fb-error"><svg class="icon--sm" appIcon="alert-circle"></svg>{{ x.message }}</p> }
+              </article>
+            } @empty {
+              <div class="fb-dropzone ed-dropzone-empty" id="ed-dropzone" [class.is-over]="dragging()">
+                <svg appIcon="plus"></svg>
+                <p class="fb-h4"><span class="fb-hide-mobile">Drag a field here or click a field in the palette</span><span class="fb-show-mobile">Tap “Add field” to choose your first field</span></p>
+                <p class="fb-small">Start with a question, like Short text or Email. Add at least one input field to publish.</p>
+                <button type="button" class="fb-btn fb-btn--primary fb-show-mobile" aria-controls="ed-left" (click)="openPanel('left')"><svg appIcon="plus"></svg>Add field</button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- properties -->
+    <aside class="fb-workspace__right ed-right" id="ed-right" aria-label="Properties" [class.is-open]="s.panel() === 'right'">
+      <div class="ed-right__head">
+        <div class="ed-sheet-head" style="position:static"><div class="fb-sheet__handle"></div></div>
+        <div class="ed-right__tabsrow">
+          <div class="fb-tabs" role="tablist" aria-label="Properties">
+            <button type="button" class="fb-tab" role="tab" id="tab-field" aria-controls="panel-field" [attr.aria-selected]="s.tab() === 'field'" [tabIndex]="s.tab() === 'field' ? 0 : -1" (click)="s.tab.set('field')">Field</button>
+            <button type="button" class="fb-tab" role="tab" id="tab-settings" aria-controls="panel-settings" [attr.aria-selected]="s.tab() === 'settings'" [tabIndex]="s.tab() === 'settings' ? 0 : -1" (click)="s.tab.set('settings')">Form settings</button>
+          </div>
+          <button type="button" class="fb-btn fb-btn--ghost fb-btn--icon fb-btn--sm ed-tm-only" aria-label="Close properties" (click)="closePanels()"><svg appIcon="x"></svg></button>
+        </div>
+      </div>
+      <div class="fb-tabpanel" role="tabpanel" id="panel-field" aria-labelledby="tab-field" [hidden]="s.tab() !== 'field'"><div class="fb-props"><app-props-panel /></div></div>
+      <div class="fb-tabpanel" role="tabpanel" id="panel-settings" aria-labelledby="tab-settings" [hidden]="s.tab() !== 'settings'"><div class="fb-props"><app-settings-panel (closeResponses)="askClose($event)" (reopen)="reopen()" /></div></div>
+    </aside>
+
+    <div class="ed-scrim" aria-hidden="true" (click)="closePanels()"></div>
+  </div>
+
+  <div class="ed-mobilebar" role="group" aria-label="Editor tools">
+    <button type="button" class="fb-btn fb-btn--secondary" aria-controls="ed-left" [attr.aria-expanded]="s.panel() === 'left'" (click)="openPanel('left')"><svg appIcon="plus"></svg>Add field</button>
+    <button type="button" class="fb-btn fb-btn--secondary" aria-controls="ed-right" [attr.aria-expanded]="s.panel() === 'right'" (click)="openPanel('right')"><svg appIcon="sliders"></svg>Properties</button>
+    <button type="button" class="fb-btn fb-btn--secondary" (click)="preview()"><svg appIcon="eye"></svg>Preview</button>
+  </div>
+</div>
+}
+
+<div class="fb-sr-only" aria-live="polite">{{ s.announcement() }}</div>
+
+<ng-template #paletteList let-types let-id="id">
+  @let list = asTypes(types);
+  <div class="ed-pal-list" cdkDropList [id]="id" cdkDropListSortingDisabled [cdkDropListEnterPredicate]="noEnter" [cdkDropListConnectedTo]="['ed-blocks']">
+    @for (t of list; track t) {
+      @if (ghostType() === t) {
+        <span class="fb-palette__item is-dragging" aria-hidden="true"><svg [appIcon]="meta[t].icon"></svg><span>{{ meta[t].name }}</span></span>
+      }
+      <button type="button" class="fb-palette__item" cdkDrag [cdkDragData]="t" (cdkDragStarted)="dragStarted(); paletteExited(t)" (cdkDragEnded)="dragEnded()" (click)="add(t)">
+        <svg [appIcon]="meta[t].icon"></svg><span>{{ meta[t].name }}</span>
+        <span *cdkDragPreview class="fb-palette__item is-lifted"><svg [appIcon]="meta[t].icon"></svg>{{ meta[t].name }}</span>
+        <div *cdkDragPlaceholder class="fb-drop-indicator" role="presentation"></div>
+      </button>
+    }
+  </div>
+</ng-template>
+
+<!-- Publish confirm -->
+<dialog #publishDlg class="fb-dialog" aria-labelledby="dlg-publish-t" aria-describedby="dlg-publish-d" (cancel)="$event.preventDefault(); closeDialogEl(publishDlg)">
+  @if (publishPlan(); as p) {
+    <div class="fb-dialog__header">
+      <span class="fb-dialog__icon"><svg appIcon="upload-cloud"></svg></span>
+      <h2 class="fb-dialog__title" id="dlg-publish-t">{{ p.first ? 'Publish form?' : 'Publish changes?' }}</h2>
+      <button type="button" class="fb-btn fb-btn--ghost fb-btn--icon fb-btn--sm" aria-label="Close" (click)="closeDialogEl(publishDlg)"><svg appIcon="x"></svg></button>
+    </div>
+    <div class="fb-dialog__body">
+      @if (p.first) {
+        <p id="dlg-publish-d">Publishing creates <strong>version 1</strong> of “{{ s.draft()?.title }}” and turns on its public link.</p>
+        <ul class="ed-checklist">
+          <li><svg appIcon="check"></svg><span>Anyone with the link can respond right away.</span></li>
+          <li><svg appIcon="check"></svg><span>You can keep editing. Changes reach respondents only when you publish again.</span></li>
+        </ul>
+      } @else {
+        <p id="dlg-publish-d">Publishing creates <strong>version {{ p.next }}</strong> of “{{ s.draft()?.title }}”. It replaces v{{ s.liveVersion() }} for everyone who opens the link.</p>
+        <ul class="ed-checklist">
+          <li><svg appIcon="check"></svg><span>Respondents get version {{ p.next }} as soon as you publish.</span></li>
+          <li><svg appIcon="check"></svg><span>Existing {{ s.form()?.responseCount?.toLocaleString('en-US') }} responses stay linked to the versions they were submitted with.</span></li>
+          <li><svg appIcon="check"></svg><span>The public link stays the same.</span></li>
+          @if (s.status() === 'closed') {
+            <li><svg appIcon="check"></svg><span>Responses stay closed until you reopen them.</span></li>
+          }
+        </ul>
+      }
+    </div>
+    <div class="fb-dialog__footer">
+      <button type="button" class="fb-btn fb-btn--secondary" (click)="closeDialogEl(publishDlg)">Cancel</button>
+      <button type="button" class="fb-btn fb-btn--primary" autofocus [class.is-loading]="publishing()" [attr.aria-busy]="publishing() || null" (click)="confirmPublish()"><svg appIcon="upload-cloud"></svg><span>{{ p.first ? 'Publish' : 'Publish changes' }}</span></button>
+    </div>
+  }
+</dialog>
+
+<!-- Publish result -->
+<dialog #publishedDlg class="fb-dialog ed-dlg-success" aria-labelledby="dlg-published-t" aria-describedby="dlg-published-d" (cancel)="$event.preventDefault(); closeDialogEl(publishedDlg)">
+  @if (published(); as p) {
+    <div class="fb-dialog__header">
+      <span class="fb-dialog__icon"><svg appIcon="check-circle"></svg></span>
+      <h2 class="fb-dialog__title" id="dlg-published-t">Form published — version {{ p.version }} is live</h2>
+      <button type="button" class="fb-btn fb-btn--ghost fb-btn--icon fb-btn--sm" aria-label="Close" (click)="closeDialogEl(publishedDlg)"><svg appIcon="x"></svg></button>
+    </div>
+    <div class="fb-dialog__body">
+      <p id="dlg-published-d">{{ p.first ? 'Your form is live. Share the link to start collecting responses.' : 'Respondents now get version ' + p.version + '. Share the link to collect responses.' }}</p>
+      <div class="fb-field">
+        <label class="fb-label" for="dlg-published-link">Public link</label>
+        <div class="fb-copy"><input class="fb-input fb-input--mono" id="dlg-published-link" readonly [value]="link()" /><button type="button" class="fb-btn fb-btn--secondary" (click)="copyLink()"><svg appIcon="copy"></svg>Copy</button></div>
+      </div>
+      @if (!p.first && p.version >= 2) {
+        <p class="fb-caption">{{ earlierVersionsNote(p.version) }}</p>
+      }
+      @if (s.status() === 'closed') {
+        <p class="fb-caption">Responses are still closed. Reopen them to accept answers to version {{ p.version }}.</p>
+      }
+    </div>
+    <div class="fb-dialog__footer">
+      <a class="fb-btn fb-btn--secondary" [href]="link()" target="_blank" rel="noopener"><svg appIcon="external-link"></svg>Open form</a>
+      <button type="button" class="fb-btn fb-btn--primary" autofocus (click)="closeDialogEl(publishedDlg)">Done</button>
+    </div>
+  }
+</dialog>
+
+<!-- Close responses confirm -->
+<dialog #closeDlg class="fb-dialog fb-dialog--sm" aria-labelledby="dlg-close-t" aria-describedby="dlg-close-d" (cancel)="$event.preventDefault(); closeDialogEl(closeDlg)">
+  <div class="fb-dialog__header">
+    <span class="fb-dialog__icon"><svg appIcon="lock"></svg></span>
+    <h2 class="fb-dialog__title" id="dlg-close-t">Close responses?</h2>
+  </div>
+  <div class="fb-dialog__body">
+    <p id="dlg-close-d">New responses won’t be accepted until you reopen. People who open the link will see a closed message.</p>
+    <p>Your <strong>{{ s.form()?.responseCount?.toLocaleString('en-US') }} {{ s.form()?.responseCount === 1 ? 'response' : 'responses' }}</strong> stay available, and you can keep editing the form.</p>
+  </div>
+  <div class="fb-dialog__footer">
+    <button type="button" class="fb-btn fb-btn--secondary" autofocus (click)="closeDialogEl(closeDlg)">Cancel</button>
+    <button type="button" class="fb-btn fb-btn--primary" [class.is-loading]="closing()" [attr.aria-busy]="closing() || null" (click)="confirmClose()"><svg appIcon="lock"></svg>Close responses</button>
+  </div>
+</dialog>

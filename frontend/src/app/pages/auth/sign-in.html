@@ -1,0 +1,84 @@
+<div class="fb-app auth">
+  <div class="auth__bar"><app-theme-toggle /></div>
+
+  <main class="auth__main" id="main">
+    <a class="fb-logo auth__logo" routerLink="/sign-in" aria-label="Form Builder">
+      <svg class="fb-logo__mark" appIcon="logo"></svg>
+      <span class="fb-logo__word">Form Builder</span>
+    </a>
+
+    <section class="fb-card auth__card" aria-labelledby="signin-title">
+      <div class="auth__head">
+        <h1 class="fb-h2" id="signin-title">Sign in</h1>
+        <p class="fb-meta">Welcome back. Sign in to manage your forms and responses.</p>
+      </div>
+
+      <form class="auth__form" novalidate [formGroup]="form" (ngSubmit)="submit()">
+        @if (signedOut()) {
+          <div class="fb-alert fb-alert--info" role="status">
+            <svg class="fb-alert__icon" appIcon="check-circle"></svg>
+            <div class="fb-alert__content">
+              <p class="fb-alert__title">You’ve been signed out.</p>
+              <p class="fb-alert__text">Sign in again to get back to your forms.</p>
+            </div>
+          </div>
+        }
+        @if (invalid()) {
+          <div #cred class="fb-alert fb-alert--danger" role="alert" tabindex="-1">
+            <svg class="fb-alert__icon" appIcon="alert-circle"></svg>
+            <div class="fb-alert__content">
+              <p class="fb-alert__title">Email or password is incorrect.</p>
+              <p class="fb-alert__text">Check both and try again. Passwords are case-sensitive.</p>
+            </div>
+          </div>
+        }
+        @if (rateLimited()) {
+          <div class="fb-alert fb-alert--warning" role="alert">
+            <svg class="fb-alert__icon" appIcon="clock"></svg>
+            <div class="fb-alert__content">
+              <p class="fb-alert__title">Too many attempts.</p>
+              <p class="fb-alert__text">Wait a minute and try again.</p>
+            </div>
+          </div>
+        }
+        @if (network()) {
+          <div class="fb-alert fb-alert--danger" role="alert">
+            <svg class="fb-alert__icon" appIcon="wifi-off"></svg>
+            <div class="fb-alert__content">
+              <p class="fb-alert__title">Couldn’t reach the server</p>
+              <p class="fb-alert__text">Check your internet connection and try again.</p>
+            </div>
+          </div>
+        }
+
+        <div class="fb-field" [class.is-invalid]="errors().email">
+          <label class="fb-label" for="si-email">Email</label>
+          <input class="fb-input" id="si-email" type="email" autocomplete="email" inputmode="email" spellcheck="false" placeholder="name@example.com"
+            formControlName="email" [readOnly]="loading()" [attr.aria-invalid]="errors().email ? 'true' : null" [attr.aria-describedby]="errors().email ? 'si-email-err' : null" />
+          @if (errors().email; as m) {
+            <p class="fb-error" id="si-email-err"><svg class="icon--sm" appIcon="alert-circle"></svg><span>{{ m }}</span></p>
+          }
+        </div>
+
+        <div class="fb-field" [class.is-invalid]="errors().password">
+          <label class="fb-label" for="si-password">Password</label>
+          <div class="pw">
+            <input class="fb-input" id="si-password" [type]="shown() ? 'text' : 'password'" autocomplete="current-password" formControlName="password" [readOnly]="loading()"
+              [attr.aria-invalid]="errors().password ? 'true' : null" [attr.aria-describedby]="errors().password ? 'si-password-err' : null" />
+            <button type="button" class="fb-btn fb-btn--ghost fb-btn--icon fb-btn--sm pw__toggle" aria-controls="si-password" [attr.aria-pressed]="shown()"
+              [attr.aria-label]="shown() ? 'Hide password' : 'Show password'" (click)="shown.set(!shown())"><svg [appIcon]="shown() ? 'eye-off' : 'eye'"></svg></button>
+          </div>
+          @if (errors().password; as m) {
+            <p class="fb-error" id="si-password-err"><svg class="icon--sm" appIcon="alert-circle"></svg><span>{{ m }}</span></p>
+          }
+        </div>
+
+        <button type="submit" class="fb-btn fb-btn--primary fb-btn--lg fb-btn--block" [class.is-loading]="loading()" [attr.aria-busy]="loading() || null">
+          <span>{{ loading() ? 'Signing in…' : 'Sign in' }}</span>
+        </button>
+      </form>
+    </section>
+
+    <p class="auth__switch">New to Form Builder? <a routerLink="/sign-up">Create an account</a></p>
+  </main>
+</div>

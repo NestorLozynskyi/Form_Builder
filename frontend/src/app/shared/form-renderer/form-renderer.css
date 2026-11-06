@@ -1,0 +1,33 @@
+/* Page-only styles for the respondent form (screens/public-form.html <style>). Tokens only. */
+.pf-summary { margin-bottom: var(--space-5); }
+.pf-summary:focus { outline: 2px solid var(--danger); outline-offset: 2px; }
+.pf-summary .fb-alert__title { font-size: var(--fs-16); }
+.pf-summary ul { display: grid; gap: var(--space-1); margin: var(--space-2) 0 0; padding-left: 18px; }
+.pf-summary a { color: var(--danger); font-weight: 500; text-decoration: underline; text-underline-offset: 2px; overflow-wrap: anywhere; }
+.pf-summary a:hover { text-decoration-thickness: 2px; }
+.pf-summary a:focus-visible { outline: 2px solid var(--danger); outline-offset: 2px; border-radius: 2px; }
+
+.fb-form__body .fb-error { overflow-wrap: anywhere; }
+.fb-form__body .fb-fieldset > legend.fb-label { margin-bottom: 2px; }
+.fb-form__body .fb-fieldset > .fb-help { margin-bottom: var(--space-1); }
+.fb-form__body .fb-fieldset > .fb-error { margin-top: var(--space-1); }
+.fb-form__body .fb-label, .fb-form__body .fb-help, .fb-form__text, .fb-form__title, .fb-form__desc, .fb-choice span { overflow-wrap: anywhere; }
+.fb-form__desc, .fb-form__text { white-space: pre-line; }
+
+.pf-w-sm { max-width: 14rem; }
+.pf-w-md { max-width: 20rem; }
+.pf-count-row { display: flex; justify-content: flex-end; }
+.fb-char-count.is-over { color: var(--danger); font-weight: 600; }
+.pf-req-mark { color: var(--danger); font-weight: 600; }
+
+.pf-banner { margin-top: var(--space-6); }
+.pf-banner + .fb-form__footer { margin-top: var(--space-4); }
+.pf-submit { min-width: 9rem; }
+
+/* honeypot: off-screen, not focusable, ignored by assistive tech */
+.pf-hp { position: absolute !important; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+
+@media (max-width: 359.98px) {
+  .fb-form__title { font-size: var(--fs-20); }
+  .fb-scale { gap: 6px; }
+}

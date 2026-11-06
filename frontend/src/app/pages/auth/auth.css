@@ -1,0 +1,24 @@
+/* Auth layout shared by sign-up / sign-in (screens/sign-up.html, screens/sign-in.html) */
+.auth { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+.auth__bar { display: flex; justify-content: flex-end; align-items: center; padding: var(--space-3) var(--page-pad); }
+.auth__main {
+  flex: 1 0 auto; display: flex; flex-direction: column; align-items: center;
+  padding: clamp(var(--space-2), 6vh, var(--space-8)) var(--page-pad) var(--space-8);
+}
+.auth__logo { margin-bottom: var(--space-5); font-size: var(--fs-20); }
+.auth__logo .fb-logo__mark { width: 28px; height: 28px; }
+.auth__card { width: 100%; max-width: 420px; padding: var(--space-6); box-shadow: var(--shadow-1); }
+.auth__head { display: grid; gap: var(--space-1); }
+.auth__form { display: grid; gap: var(--space-5); margin-top: var(--space-5); }
+.auth__form .fb-alert { margin: 0; }
+.auth__switch { margin-top: var(--space-5); text-align: center; font-size: var(--fs-14); color: var(--text-2); }
+.auth__switch a { font-weight: 600; }
+.pw { position: relative; display: block; min-width: 0; }
+.pw > .fb-input { padding-right: 48px; }
+.pw__toggle { position: absolute; right: 4px; top: calc((var(--control-h) - var(--control-h-sm)) / 2); }
+.pw__toggle:active { transform: none; }
+.fb-input[readonly] { background: var(--surface-2); }
+@media (max-width: 767.98px) {
+  .auth__card { padding: var(--space-5) var(--space-4); }
+  .auth__logo { margin-bottom: var(--space-4); }
+}

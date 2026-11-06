@@ -1,0 +1,78 @@
+@if (s.draft(); as d) {
+  <section class="fb-props__section">
+    <h3 class="fb-props__title">Form</h3>
+    <div class="fb-field"><label class="fb-label" for="s-title">Title</label>
+      <input class="fb-input" type="text" id="s-title" maxlength="200" [value]="d.title" (input)="field('title', $event)" /></div>
+    <div class="fb-field"><label class="fb-label" for="s-description">Description <span class="fb-label__opt">(optional)</span></label>
+      <textarea class="fb-input fb-textarea" rows="3" id="s-description" maxlength="2000" placeholder="Tell respondents what this form is about" [value]="d.description" (input)="field('description', $event)"></textarea></div>
+    <div class="fb-field"><label class="fb-label" for="s-success">Message after submission</label>
+      <p class="fb-help" id="s-success-help">Shown to respondents after they submit the form.</p>
+      <textarea class="fb-input fb-textarea" rows="3" id="s-success" maxlength="1000" aria-describedby="s-success-help" [value]="d.successMessage" (input)="field('successMessage', $event)"></textarea></div>
+  </section>
+
+  <section class="fb-props__section">
+    <h3 class="fb-props__title">Accent color</h3>
+    <div class="fb-swatches" role="radiogroup" aria-label="Accent color">
+      @for (a of accents; track a.key) {
+        <label class="fb-swatch" [style.--swatch]="a.light" style="--swatch-on: #FFFFFF">
+          <input type="radio" name="ed-accent" [value]="a.key" [checked]="accent() === a.key" (change)="pickSwatch(a.key)" /><span class="fb-swatch__chip"></span><span class="fb-sr-only">{{ a.name }}</span>
+        </label>
+      }
+      <label class="fb-swatch fb-swatch--custom" [style.--swatch]="preset() ? null : hex()">
+        <input type="radio" name="ed-accent" value="custom" [checked]="!preset()" (change)="pickSwatch('custom')" /><span class="fb-swatch__chip"></span><span class="fb-sr-only">Custom color</span>
+      </label>
+    </div>
+    <div class="fb-field"><label class="fb-label" for="s-hex">Custom color</label>
+      <p class="fb-help" id="s-hex-help">Hex value. We check contrast for light and dark themes.</p>
+      <div class="fb-color-input">
+        <input type="color" id="s-color" aria-label="Pick a custom color" [value]="hex().toLowerCase()" (input)="onColor($event)" />
+        <input class="fb-input fb-input--mono" id="s-hex" type="text" maxlength="7" spellcheck="false" autocomplete="off" aria-describedby="s-hex-help s-contrast"
+          [value]="hexText() ?? hex()" [attr.aria-invalid]="hexInvalid() ? 'true' : null" (input)="onHex($event)" />
+      </div>
+    </div>
+    <div id="s-contrast" aria-live="polite">
+      @if (hexInvalid()) {
+        <p class="fb-error"><svg class="icon--sm" appIcon="alert-circle"></svg>Enter a hex color like #0F766E.</p>
+      } @else if (info(); as i) {
+        @if (i.warning) {
+          <div class="fb-alert fb-alert--warning">
+            <svg class="fb-alert__icon" appIcon="alert-triangle"></svg>
+            <div class="fb-alert__content"><p class="fb-alert__title">Low contrast</p><p class="fb-alert__text">{{ i.warning }}</p></div>
+          </div>
+        } @else {
+          <p class="ed-contrast-ok"><svg appIcon="check-circle"></svg><span>Contrast {{ ratio() }} in the light theme and {{ ratioDark() }} in the dark theme. Buttons and selected options stay readable.</span></p>
+        }
+      }
+    </div>
+    <div class="fb-public fb-public--embed ed-accent-preview" inert aria-label="Accent preview" [appAccent]="accent()">
+      <span class="fb-btn fb-btn--primary fb-btn--sm">Submit</span>
+      <label class="fb-choice"><input type="radio" class="fb-radio" checked tabindex="-1" /><span>Selected</span></label>
+      <div class="fb-scale"><label class="fb-scale__item"><input type="radio" name="s-pv" tabindex="-1" /><span>1</span></label><label class="fb-scale__item"><input type="radio" name="s-pv" checked tabindex="-1" /><span>2</span></label></div>
+      <span class="fb-link fb-small">Link</span>
+    </div>
+  </section>
+
+  @if (s.status() === 'draft') {
+    <section class="fb-props__section"><h3 class="fb-props__title">Sharing</h3><p class="fb-small fb-muted">Publish the form to get its public link.</p></section>
+    <section class="fb-props__section"><h3 class="fb-props__title">Responses</h3><p class="fb-small fb-muted">Responses open automatically when you publish.</p></section>
+  } @else {
+    <section class="fb-props__section">
+      <h3 class="fb-props__title">Sharing</h3>
+      <div class="fb-field"><label class="fb-label" for="s-link">Public link</label>
+        <p class="fb-help" id="s-link-help">Anyone with the link can respond. The link is unique and can’t be guessed.</p>
+        <div class="fb-copy"><input class="fb-input fb-input--mono" id="s-link" readonly [value]="link()" aria-describedby="s-link-help" /><button type="button" class="fb-btn fb-btn--secondary" (click)="copy()"><svg appIcon="copy"></svg>Copy</button></div>
+      </div>
+    </section>
+    <section class="fb-props__section">
+      <h3 class="fb-props__title">Responses</h3>
+      @if (s.status() === 'closed') {
+        <div class="ed-resp"><span class="fb-badge fb-badge--closed"><svg appIcon="lock"></svg>Closed</span><a class="fb-link fb-small" [routerLink]="['/forms', s.form()!.id, 'responses']">{{ s.form()!.responseCount.toLocaleString('en-US') }} responses</a></div>
+        <p class="fb-small fb-muted">New responses aren’t accepted. People who open the link see a closed message.</p>
+        <button type="button" class="fb-btn fb-btn--secondary fb-btn--sm ed-resp-actions" (click)="reopen.emit()"><svg appIcon="unlock"></svg>Reopen responses</button>
+      } @else {
+        <div class="ed-resp"><span class="fb-badge fb-badge--success"><svg appIcon="check-circle"></svg>Accepting responses</span><a class="fb-link fb-small" [routerLink]="['/forms', s.form()!.id, 'responses']">{{ s.form()!.responseCount.toLocaleString('en-US') }} responses</a></div>
+        <button #closeBtn type="button" class="fb-btn fb-btn--secondary fb-btn--sm ed-resp-actions" (click)="closeResponses.emit(closeBtn)"><svg appIcon="lock"></svg>Close responses</button>
+      }
+    </section>
+  }
+}

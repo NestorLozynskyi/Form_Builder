@@ -1,0 +1,1982 @@
+{
+ "today": "2026-11-05",
+ "answers": [
+  {
+   "name": "short required empty",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": true,
+    "minLength": 2,
+    "maxLength": 80
+   },
+   "value": "",
+   "today": "2026-11-05",
+   "error": "Enter an answer.",
+   "normalized": null
+  },
+  {
+   "name": "short required whitespace (incl. NBSP/FEFF)",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": true,
+    "minLength": 2,
+    "maxLength": 80
+   },
+   "value": "  ﻿ ",
+   "today": "2026-11-05",
+   "error": "Enter an answer.",
+   "normalized": null
+  },
+  {
+   "name": "short null required",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": true,
+    "minLength": 2,
+    "maxLength": 80
+   },
+   "value": null,
+   "today": "2026-11-05",
+   "error": "Enter an answer.",
+   "normalized": null
+  },
+  {
+   "name": "short optional empty",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false
+   },
+   "value": "",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": null
+  },
+  {
+   "name": "short too short",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": true,
+    "minLength": 2,
+    "maxLength": 80
+   },
+   "value": "A",
+   "today": "2026-11-05",
+   "error": "Use at least 2 characters — you’re at 1.",
+   "normalized": null
+  },
+  {
+   "name": "short trimmed ok",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": true,
+    "minLength": 2,
+    "maxLength": 80
+   },
+   "value": "  Anna Kovalenko  ",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "Anna Kovalenko"
+  },
+  {
+   "name": "short too long",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": true,
+    "minLength": 2,
+    "maxLength": 80
+   },
+   "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+   "today": "2026-11-05",
+   "error": "Use 80 characters or fewer — you’re at 81.",
+   "normalized": null
+  },
+  {
+   "name": "short hard limit",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false
+   },
+   "value": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+   "today": "2026-11-05",
+   "error": "Use 1,000 characters or fewer — you’re at 1,001.",
+   "normalized": null
+  },
+  {
+   "name": "short min 1 singular",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false,
+    "minLength": 3
+   },
+   "value": "ab",
+   "today": "2026-11-05",
+   "error": "Use at least 3 characters — you’re at 2.",
+   "normalized": null
+  },
+  {
+   "name": "short max 1 singular",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false,
+    "maxLength": 1
+   },
+   "value": "ab",
+   "today": "2026-11-05",
+   "error": "Use 1 character or fewer — you’re at 2.",
+   "normalized": null
+  },
+  {
+   "name": "pattern match",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false,
+    "pattern": "^FB-\\d{6}$",
+    "patternMessage": "Enter an order number like FB-123456."
+   },
+   "value": "FB-204518",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "FB-204518"
+  },
+  {
+   "name": "pattern mismatch custom msg",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false,
+    "pattern": "^FB-\\d{6}$",
+    "patternMessage": "Enter an order number like FB-123456."
+   },
+   "value": "FB-12345",
+   "today": "2026-11-05",
+   "error": "Enter an order number like FB-123456.",
+   "normalized": null
+  },
+  {
+   "name": "pattern default msg",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false,
+    "pattern": "^[a-z]+$"
+   },
+   "value": "ABC",
+   "today": "2026-11-05",
+   "error": "Enter an answer in the expected format.",
+   "normalized": null
+  },
+  {
+   "name": "pattern applied to trimmed value",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false,
+    "pattern": "^FB-\\d{6}$",
+    "patternMessage": "Enter an order number like FB-123456."
+   },
+   "value": "  FB-000001 ",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "FB-000001"
+  },
+  {
+   "name": "pattern search semantics",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false,
+    "pattern": "cat"
+   },
+   "value": "concatenate",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "concatenate"
+  },
+  {
+   "name": "pattern unicode digit not \\d",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false,
+    "pattern": "^\\d+$"
+   },
+   "value": "١٢٣",
+   "today": "2026-11-05",
+   "error": "Enter an answer in the expected format.",
+   "normalized": null
+  },
+  {
+   "name": "pattern dot excludes newline",
+   "block": {
+    "id": "q",
+    "type": "long",
+    "label": "Question",
+    "required": false,
+    "pattern": "^a.b$"
+   },
+   "value": "a\nb",
+   "today": "2026-11-05",
+   "error": "Enter an answer in the expected format.",
+   "normalized": null
+  },
+  {
+   "name": "pattern $ is end of value only",
+   "block": {
+    "id": "q",
+    "type": "long",
+    "label": "Question",
+    "required": false,
+    "pattern": "^ab$"
+   },
+   "value": "ab\nx",
+   "today": "2026-11-05",
+   "error": "Enter an answer in the expected format.",
+   "normalized": null
+  },
+  {
+   "name": "pattern optional empty skips",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false,
+    "pattern": "^FB-\\d{6}$",
+    "patternMessage": "Enter an order number like FB-123456."
+   },
+   "value": "",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": null
+  },
+  {
+   "name": "long ok multi-line",
+   "block": {
+    "id": "q",
+    "type": "long",
+    "label": "Question",
+    "required": false,
+    "maxLength": 1000
+   },
+   "value": "Line one\nLine two",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "Line one\nLine two"
+  },
+  {
+   "name": "long over limit",
+   "block": {
+    "id": "q",
+    "type": "long",
+    "label": "Question",
+    "required": false,
+    "maxLength": 1000
+   },
+   "value": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+   "today": "2026-11-05",
+   "error": "Use 1,000 characters or fewer — you’re at 1,046.",
+   "normalized": null
+  },
+  {
+   "name": "long hard limit",
+   "block": {
+    "id": "q",
+    "type": "long",
+    "label": "Question",
+    "required": false
+   },
+   "value": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+   "today": "2026-11-05",
+   "error": "Use 10,000 characters or fewer — you’re at 10,001.",
+   "normalized": null
+  },
+  {
+   "name": "long counts UTF-16 units",
+   "block": {
+    "id": "q",
+    "type": "long",
+    "label": "Question",
+    "required": false,
+    "maxLength": 3
+   },
+   "value": "😀😀",
+   "today": "2026-11-05",
+   "error": "Use 3 characters or fewer — you’re at 4.",
+   "normalized": null
+  },
+  {
+   "name": "email required",
+   "block": {
+    "id": "q",
+    "type": "email",
+    "label": "Question",
+    "required": true
+   },
+   "value": "",
+   "today": "2026-11-05",
+   "error": "Enter an email address.",
+   "normalized": null
+  },
+  {
+   "name": "email ok",
+   "block": {
+    "id": "q",
+    "type": "email",
+    "label": "Question",
+    "required": true
+   },
+   "value": "anna.k@example.com",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "anna.k@example.com"
+  },
+  {
+   "name": "email missing tld",
+   "block": {
+    "id": "q",
+    "type": "email",
+    "label": "Question",
+    "required": true
+   },
+   "value": "anna.k@example",
+   "today": "2026-11-05",
+   "error": "Enter an email address like name@example.com.",
+   "normalized": null
+  },
+  {
+   "name": "email tld 1 char",
+   "block": {
+    "id": "q",
+    "type": "email",
+    "label": "Question",
+    "required": true
+   },
+   "value": "a@b.c",
+   "today": "2026-11-05",
+   "error": "Enter an email address like name@example.com.",
+   "normalized": null
+  },
+  {
+   "name": "email two @",
+   "block": {
+    "id": "q",
+    "type": "email",
+    "label": "Question",
+    "required": true
+   },
+   "value": "a@b@c.com",
+   "today": "2026-11-05",
+   "error": "Enter an email address like name@example.com.",
+   "normalized": null
+  },
+  {
+   "name": "email inner space",
+   "block": {
+    "id": "q",
+    "type": "email",
+    "label": "Question",
+    "required": true
+   },
+   "value": "an na@example.com",
+   "today": "2026-11-05",
+   "error": "Enter an email address like name@example.com.",
+   "normalized": null
+  },
+  {
+   "name": "email subdomain",
+   "block": {
+    "id": "q",
+    "type": "email",
+    "label": "Question",
+    "required": true
+   },
+   "value": "x@mail.example.co",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "x@mail.example.co"
+  },
+  {
+   "name": "email wrong type",
+   "block": {
+    "id": "q",
+    "type": "email",
+    "label": "Question",
+    "required": true
+   },
+   "value": 5,
+   "today": "2026-11-05",
+   "error": "Enter an email address like name@example.com.",
+   "normalized": null
+  },
+  {
+   "name": "number optional empty",
+   "block": {
+    "id": "q",
+    "type": "number",
+    "label": "Question",
+    "required": false,
+    "min": 1,
+    "max": 500,
+    "integer": true
+   },
+   "value": "",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": null
+  },
+  {
+   "name": "number ok",
+   "block": {
+    "id": "q",
+    "type": "number",
+    "label": "Question",
+    "required": false,
+    "min": 1,
+    "max": 500,
+    "integer": true
+   },
+   "value": "12",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "12"
+  },
+  {
+   "name": "number decimal not allowed",
+   "block": {
+    "id": "q",
+    "type": "number",
+    "label": "Question",
+    "required": false,
+    "min": 1,
+    "max": 500,
+    "integer": true
+   },
+   "value": "12.5",
+   "today": "2026-11-05",
+   "error": "Enter a whole number, without decimals.",
+   "normalized": null
+  },
+  {
+   "name": "number out of range",
+   "block": {
+    "id": "q",
+    "type": "number",
+    "label": "Question",
+    "required": false,
+    "min": 1,
+    "max": 500,
+    "integer": true
+   },
+   "value": "750",
+   "today": "2026-11-05",
+   "error": "Enter a number from 1 to 500.",
+   "normalized": null
+  },
+  {
+   "name": "number letters",
+   "block": {
+    "id": "q",
+    "type": "number",
+    "label": "Question",
+    "required": false,
+    "min": 1,
+    "max": 500,
+    "integer": true
+   },
+   "value": "12a",
+   "today": "2026-11-05",
+   "error": "Enter a number using digits only, like 25.",
+   "normalized": null
+  },
+  {
+   "name": "number exponent rejected",
+   "block": {
+    "id": "q",
+    "type": "number",
+    "label": "Question",
+    "required": false,
+    "min": 1,
+    "max": 500,
+    "integer": true
+   },
+   "value": "1e3",
+   "today": "2026-11-05",
+   "error": "Enter a number using digits only, like 25.",
+   "normalized": null
+  },
+  {
+   "name": "number plus rejected",
+   "block": {
+    "id": "q",
+    "type": "number",
+    "label": "Question",
+    "required": false,
+    "min": 1,
+    "max": 500,
+    "integer": true
+   },
+   "value": "+5",
+   "today": "2026-11-05",
+   "error": "Enter a number using digits only, like 25.",
+   "normalized": null
+  },
+  {
+   "name": "number negative below",
+   "block": {
+    "id": "q",
+    "type": "number",
+    "label": "Question",
+    "required": false,
+    "min": 1,
+    "max": 500,
+    "integer": true
+   },
+   "value": "-3",
+   "today": "2026-11-05",
+   "error": "Enter a number from 1 to 500.",
+   "normalized": null
+  },
+  {
+   "name": "number required",
+   "block": {
+    "id": "q",
+    "type": "number",
+    "label": "Question",
+    "required": true
+   },
+   "value": "",
+   "today": "2026-11-05",
+   "error": "Enter a number.",
+   "normalized": null
+  },
+  {
+   "name": "number min only",
+   "block": {
+    "id": "q",
+    "type": "number",
+    "label": "Question",
+    "required": false,
+    "min": 0.5
+   },
+   "value": "0.25",
+   "today": "2026-11-05",
+   "error": "Enter a number of at least 0.5.",
+   "normalized": null
+  },
+  {
+   "name": "number max only",
+   "block": {
+    "id": "q",
+    "type": "number",
+    "label": "Question",
+    "required": false,
+    "max": -2
+   },
+   "value": "0",
+   "today": "2026-11-05",
+   "error": "Enter a number of at most -2.",
+   "normalized": null
+  },
+  {
+   "name": "number decimal allowed",
+   "block": {
+    "id": "q",
+    "type": "number",
+    "label": "Question",
+    "required": false
+   },
+   "value": "-0.75",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "-0.75"
+  },
+  {
+   "name": "number 12.0 is whole",
+   "block": {
+    "id": "q",
+    "type": "number",
+    "label": "Question",
+    "required": false,
+    "min": 1,
+    "max": 500,
+    "integer": true
+   },
+   "value": "12.0",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "12.0"
+  },
+  {
+   "name": "date ok",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": false,
+    "earliest": "2024-01-01",
+    "latestMode": "today"
+   },
+   "value": "2025-03-14",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "2025-03-14"
+  },
+  {
+   "name": "date before range",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": false,
+    "earliest": "2024-01-01",
+    "latestMode": "today"
+   },
+   "value": "2023-11-20",
+   "today": "2026-11-05",
+   "error": "Choose a date between Jan 1, 2024 and today.",
+   "normalized": null
+  },
+  {
+   "name": "date after today",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": false,
+    "earliest": "2024-01-01",
+    "latestMode": "today"
+   },
+   "value": "2026-11-06",
+   "today": "2026-11-05",
+   "error": "Choose a date between Jan 1, 2024 and today.",
+   "normalized": null
+  },
+  {
+   "name": "date today boundary",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": false,
+    "earliest": "2024-01-01",
+    "latestMode": "today"
+   },
+   "value": "2026-11-05",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "2026-11-05"
+  },
+  {
+   "name": "date invalid optional",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": false,
+    "earliest": "2024-01-01",
+    "latestMode": "today"
+   },
+   "value": "2025-02-30",
+   "today": "2026-11-05",
+   "error": "Enter a complete date, or clear the field.",
+   "normalized": null
+  },
+  {
+   "name": "date invalid required",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": true
+   },
+   "value": "2025-13-01",
+   "today": "2026-11-05",
+   "error": "Enter a complete date.",
+   "normalized": null
+  },
+  {
+   "name": "date leap day",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": false
+   },
+   "value": "2024-02-29",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "2024-02-29"
+  },
+  {
+   "name": "date non-leap",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": false
+   },
+   "value": "2023-02-29",
+   "today": "2026-11-05",
+   "error": "Enter a complete date, or clear the field.",
+   "normalized": null
+  },
+  {
+   "name": "date earliest only",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": false,
+    "earliest": "2024-06-01",
+    "latestMode": "none"
+   },
+   "value": "2024-05-31",
+   "today": "2026-11-05",
+   "error": "Choose a date on or after Jun 1, 2024.",
+   "normalized": null
+  },
+  {
+   "name": "date specific latest",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": false,
+    "latestMode": "date",
+    "latest": "2026-11-05"
+   },
+   "value": "2026-12-01",
+   "today": "2026-11-05",
+   "error": "Choose a date on or before Nov 5, 2026.",
+   "normalized": null
+  },
+  {
+   "name": "date today only",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": false,
+    "latestMode": "today"
+   },
+   "value": "2027-01-01",
+   "today": "2026-11-05",
+   "error": "Choose a date on or before today.",
+   "normalized": null
+  },
+  {
+   "name": "date required",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": true
+   },
+   "value": "",
+   "today": "2026-11-05",
+   "error": "Enter a date.",
+   "normalized": null
+  },
+  {
+   "name": "checkbox required empty",
+   "block": {
+    "id": "q",
+    "type": "checkbox",
+    "label": "Question",
+    "required": true,
+    "options": [
+     "Form editor",
+     "Responses table",
+     "CSV export",
+     "Public links"
+    ],
+    "minSelected": 1,
+    "maxSelected": 3
+   },
+   "value": [],
+   "today": "2026-11-05",
+   "error": "Choose at least 1 option.",
+   "normalized": null
+  },
+  {
+   "name": "checkbox null required",
+   "block": {
+    "id": "q",
+    "type": "checkbox",
+    "label": "Question",
+    "required": true,
+    "options": [
+     "Form editor",
+     "Responses table",
+     "CSV export",
+     "Public links"
+    ],
+    "minSelected": 1,
+    "maxSelected": 3
+   },
+   "value": null,
+   "today": "2026-11-05",
+   "error": "Choose at least 1 option.",
+   "normalized": null
+  },
+  {
+   "name": "checkbox too many",
+   "block": {
+    "id": "q",
+    "type": "checkbox",
+    "label": "Question",
+    "required": true,
+    "options": [
+     "Form editor",
+     "Responses table",
+     "CSV export",
+     "Public links"
+    ],
+    "minSelected": 1,
+    "maxSelected": 3
+   },
+   "value": [
+    "Form editor",
+    "Responses table",
+    "CSV export",
+    "Public links"
+   ],
+   "today": "2026-11-05",
+   "error": "Choose no more than 3 options.",
+   "normalized": null
+  },
+  {
+   "name": "checkbox ok normalized order",
+   "block": {
+    "id": "q",
+    "type": "checkbox",
+    "label": "Question",
+    "required": true,
+    "options": [
+     "Form editor",
+     "Responses table",
+     "CSV export",
+     "Public links"
+    ],
+    "minSelected": 1,
+    "maxSelected": 3
+   },
+   "value": [
+    "CSV export",
+    "Form editor"
+   ],
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": [
+    "Form editor",
+    "CSV export"
+   ]
+  },
+  {
+   "name": "checkbox unknown option",
+   "block": {
+    "id": "q",
+    "type": "checkbox",
+    "label": "Question",
+    "required": true,
+    "options": [
+     "Form editor",
+     "Responses table",
+     "CSV export",
+     "Public links"
+    ],
+    "minSelected": 1,
+    "maxSelected": 3
+   },
+   "value": [
+    "Hacked"
+   ],
+   "today": "2026-11-05",
+   "error": "Choose from the listed options.",
+   "normalized": null
+  },
+  {
+   "name": "checkbox duplicate",
+   "block": {
+    "id": "q",
+    "type": "checkbox",
+    "label": "Question",
+    "required": true,
+    "options": [
+     "Form editor",
+     "Responses table",
+     "CSV export",
+     "Public links"
+    ],
+    "minSelected": 1,
+    "maxSelected": 3
+   },
+   "value": [
+    "CSV export",
+    "CSV export"
+   ],
+   "today": "2026-11-05",
+   "error": "Choose from the listed options.",
+   "normalized": null
+  },
+  {
+   "name": "checkbox not array",
+   "block": {
+    "id": "q",
+    "type": "checkbox",
+    "label": "Question",
+    "required": true,
+    "options": [
+     "Form editor",
+     "Responses table",
+     "CSV export",
+     "Public links"
+    ],
+    "minSelected": 1,
+    "maxSelected": 3
+   },
+   "value": "CSV export",
+   "today": "2026-11-05",
+   "error": "Choose from the listed options.",
+   "normalized": null
+  },
+  {
+   "name": "checkbox min 2",
+   "block": {
+    "id": "q",
+    "type": "checkbox",
+    "label": "Question",
+    "required": false,
+    "options": [
+     "Form editor",
+     "Responses table",
+     "CSV export",
+     "Public links"
+    ],
+    "minSelected": 2
+   },
+   "value": [
+    "CSV export"
+   ],
+   "today": "2026-11-05",
+   "error": "Choose at least 2 options.",
+   "normalized": null
+  },
+  {
+   "name": "checkbox optional empty",
+   "block": {
+    "id": "q",
+    "type": "checkbox",
+    "label": "Question",
+    "required": false,
+    "options": [
+     "Form editor",
+     "Responses table",
+     "CSV export",
+     "Public links"
+    ],
+    "minSelected": 2
+   },
+   "value": [],
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": null
+  },
+  {
+   "name": "checkbox required with min 2",
+   "block": {
+    "id": "q",
+    "type": "checkbox",
+    "label": "Question",
+    "required": true,
+    "options": [
+     "Form editor",
+     "Responses table",
+     "CSV export",
+     "Public links"
+    ],
+    "minSelected": 2
+   },
+   "value": [],
+   "today": "2026-11-05",
+   "error": "Choose at least 2 options.",
+   "normalized": null
+  },
+  {
+   "name": "checkbox max 1",
+   "block": {
+    "id": "q",
+    "type": "checkbox",
+    "label": "Question",
+    "required": false,
+    "options": [
+     "Form editor",
+     "Responses table",
+     "CSV export",
+     "Public links"
+    ],
+    "maxSelected": 1
+   },
+   "value": [
+    "CSV export",
+    "Public links"
+   ],
+   "today": "2026-11-05",
+   "error": "Choose no more than 1 option.",
+   "normalized": null
+  },
+  {
+   "name": "radio ok",
+   "block": {
+    "id": "q",
+    "type": "radio",
+    "label": "Question",
+    "required": true,
+    "options": [
+     "Search engine",
+     "Other"
+    ]
+   },
+   "value": "Other",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "Other"
+  },
+  {
+   "name": "radio required",
+   "block": {
+    "id": "q",
+    "type": "radio",
+    "label": "Question",
+    "required": true,
+    "options": [
+     "Search engine",
+     "Other"
+    ]
+   },
+   "value": "",
+   "today": "2026-11-05",
+   "error": "Choose an option.",
+   "normalized": null
+  },
+  {
+   "name": "radio unknown",
+   "block": {
+    "id": "q",
+    "type": "radio",
+    "label": "Question",
+    "required": true,
+    "options": [
+     "Search engine",
+     "Other"
+    ]
+   },
+   "value": "Nope",
+   "today": "2026-11-05",
+   "error": "Choose one of the listed options.",
+   "normalized": null
+  },
+  {
+   "name": "dropdown ok",
+   "block": {
+    "id": "q",
+    "type": "dropdown",
+    "label": "Question",
+    "required": false,
+    "options": [
+     "Canada",
+     "Ukraine"
+    ]
+   },
+   "value": "Ukraine",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "Ukraine"
+  },
+  {
+   "name": "dropdown wrong type",
+   "block": {
+    "id": "q",
+    "type": "dropdown",
+    "label": "Question",
+    "required": false,
+    "options": [
+     "Canada",
+     "Ukraine"
+    ]
+   },
+   "value": [
+    "Ukraine"
+   ],
+   "today": "2026-11-05",
+   "error": "Choose one of the listed options.",
+   "normalized": null
+  },
+  {
+   "name": "scale required with labels",
+   "block": {
+    "id": "q",
+    "type": "scale",
+    "label": "Question",
+    "required": true,
+    "max": 5,
+    "leftLabel": "Not at all",
+    "rightLabel": "Very satisfied"
+   },
+   "value": "",
+   "today": "2026-11-05",
+   "error": "Choose a rating from 1 (Not at all) to 5 (Very satisfied).",
+   "normalized": null
+  },
+  {
+   "name": "scale required no labels",
+   "block": {
+    "id": "q",
+    "type": "scale",
+    "label": "Question",
+    "required": true,
+    "max": 10
+   },
+   "value": "",
+   "today": "2026-11-05",
+   "error": "Choose a rating from 1 to 10.",
+   "normalized": null
+  },
+  {
+   "name": "scale ok",
+   "block": {
+    "id": "q",
+    "type": "scale",
+    "label": "Question",
+    "required": true,
+    "max": 5,
+    "leftLabel": "Not at all",
+    "rightLabel": "Very satisfied"
+   },
+   "value": "4",
+   "today": "2026-11-05",
+   "error": null,
+   "normalized": "4"
+  },
+  {
+   "name": "scale out of range",
+   "block": {
+    "id": "q",
+    "type": "scale",
+    "label": "Question",
+    "required": true,
+    "max": 5,
+    "leftLabel": "Not at all",
+    "rightLabel": "Very satisfied"
+   },
+   "value": "6",
+   "today": "2026-11-05",
+   "error": "Choose a rating from 1 to 5.",
+   "normalized": null
+  },
+  {
+   "name": "scale leading zero",
+   "block": {
+    "id": "q",
+    "type": "scale",
+    "label": "Question",
+    "required": true,
+    "max": 5,
+    "leftLabel": "Not at all",
+    "rightLabel": "Very satisfied"
+   },
+   "value": "04",
+   "today": "2026-11-05",
+   "error": "Choose a rating from 1 to 5.",
+   "normalized": null
+  },
+  {
+   "name": "scale zero",
+   "block": {
+    "id": "q",
+    "type": "scale",
+    "label": "Question",
+    "required": true,
+    "max": 5,
+    "leftLabel": "Not at all",
+    "rightLabel": "Very satisfied"
+   },
+   "value": "0",
+   "today": "2026-11-05",
+   "error": "Choose a rating from 1 to 5.",
+   "normalized": null
+  },
+  {
+   "name": "scale number type",
+   "block": {
+    "id": "q",
+    "type": "scale",
+    "label": "Question",
+    "required": true,
+    "max": 5,
+    "leftLabel": "Not at all",
+    "rightLabel": "Very satisfied"
+   },
+   "value": 4,
+   "today": "2026-11-05",
+   "error": "Choose a rating from 1 to 5.",
+   "normalized": null
+  }
+ ],
+ "config": [
+  {
+   "name": "valid short",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false,
+    "minLength": 2,
+    "maxLength": 80,
+    "pattern": "^[A-Z]{2}-[0-9]{4}$"
+   },
+   "expected": []
+  },
+  {
+   "name": "empty label",
+   "block": {
+    "id": "q",
+    "type": "email",
+    "label": "  ",
+    "required": false
+   },
+   "expected": [
+    {
+     "key": "label",
+     "message": "Add a label for this question."
+    }
+   ]
+  },
+  {
+   "name": "min > max length",
+   "block": {
+    "id": "q",
+    "type": "long",
+    "label": "Question",
+    "required": false,
+    "minLength": 500,
+    "maxLength": 200
+   },
+   "expected": [
+    {
+     "key": "len",
+     "message": "Minimum length can’t be greater than maximum length."
+    }
+   ]
+  },
+  {
+   "name": "negative length",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false,
+    "minLength": -1
+   },
+   "expected": [
+    {
+     "key": "len",
+     "message": "Lengths can’t be negative."
+    }
+   ]
+  },
+  {
+   "name": "length over hard limit",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false,
+    "maxLength": 5000
+   },
+   "expected": [
+    {
+     "key": "len",
+     "message": "Lengths can’t be more than 1,000 characters."
+    }
+   ]
+  },
+  {
+   "name": "nested pattern",
+   "block": {
+    "id": "q",
+    "type": "short",
+    "label": "Question",
+    "required": false,
+    "pattern": "(a+)+$"
+   },
+   "expected": [
+    {
+     "key": "pattern",
+     "message": "This pattern could be very slow to check. Avoid nested repeats like (a+)+."
+    }
+   ]
+  },
+  {
+   "name": "unclosed class",
+   "block": {
+    "id": "q",
+    "type": "long",
+    "label": "Question",
+    "required": false,
+    "pattern": "[a-z",
+    "minLength": 500,
+    "maxLength": 200
+   },
+   "expected": [
+    {
+     "key": "len",
+     "message": "Minimum length can’t be greater than maximum length."
+    },
+    {
+     "key": "pattern",
+     "message": "Invalid pattern: missing closing ]"
+    }
+   ]
+  },
+  {
+   "name": "number min > max",
+   "block": {
+    "id": "q",
+    "type": "number",
+    "label": "Question",
+    "required": false,
+    "min": 10,
+    "max": 1
+   },
+   "expected": [
+    {
+     "key": "range",
+     "message": "Minimum value can’t be greater than maximum value."
+    }
+   ]
+  },
+  {
+   "name": "date earliest > latest",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": false,
+    "earliest": "2026-01-01",
+    "latestMode": "date",
+    "latest": "2025-01-01"
+   },
+   "expected": [
+    {
+     "key": "dates",
+     "message": "Earliest date can’t be after latest date."
+    }
+   ]
+  },
+  {
+   "name": "date latest missing",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": false,
+    "latestMode": "date",
+    "latest": null
+   },
+   "expected": [
+    {
+     "key": "dates",
+     "message": "Choose the latest date, or set Latest date to No limit."
+    }
+   ]
+  },
+  {
+   "name": "date earliest invalid",
+   "block": {
+    "id": "q",
+    "type": "date",
+    "label": "Question",
+    "required": false,
+    "earliest": "2026-02-30"
+   },
+   "expected": [
+    {
+     "key": "dates",
+     "message": "Enter the earliest date as a complete date."
+    }
+   ]
+  },
+  {
+   "name": "empty option",
+   "block": {
+    "id": "q",
+    "type": "checkbox",
+    "label": "Question",
+    "required": false,
+    "options": [
+     "Form editor",
+     "Responses table",
+     "",
+     "Public links"
+    ]
+   },
+   "expected": [
+    {
+     "key": "opt2",
+     "message": "Option 3 is empty. Enter text or remove it."
+    }
+   ]
+  },
+  {
+   "name": "one option",
+   "block": {
+    "id": "q",
+    "type": "radio",
+    "label": "Question",
+    "required": false,
+    "options": [
+     "Search engine"
+    ]
+   },
+   "expected": [
+    {
+     "key": "opts",
+     "message": "Add at least 2 options."
+    }
+   ]
+  },
+  {
+   "name": "duplicate option",
+   "block": {
+    "id": "q",
+    "type": "dropdown",
+    "label": "Question",
+    "required": false,
+    "options": [
+     "Yes",
+     "No",
+     " Yes "
+    ]
+   },
+   "expected": [
+    {
+     "key": "opt2",
+     "message": "Option 3 is the same as option 1. Use different text."
+    }
+   ]
+  },
+  {
+   "name": "checkbox min > max",
+   "block": {
+    "id": "q",
+    "type": "checkbox",
+    "label": "Question",
+    "required": false,
+    "options": [
+     "a",
+     "b",
+     "c"
+    ],
+    "minSelected": 3,
+    "maxSelected": 2
+   },
+   "expected": [
+    {
+     "key": "sel",
+     "message": "Minimum selected can’t be greater than maximum selected."
+    }
+   ]
+  },
+  {
+   "name": "checkbox max > options",
+   "block": {
+    "id": "q",
+    "type": "checkbox",
+    "label": "Question",
+    "required": false,
+    "options": [
+     "a",
+     "b"
+    ],
+    "maxSelected": 3
+   },
+   "expected": [
+    {
+     "key": "sel",
+     "message": "Selection limits can’t be more than the number of options."
+    }
+   ]
+  },
+  {
+   "name": "heading has no rules",
+   "block": {
+    "id": "q",
+    "type": "heading",
+    "text": ""
+   },
+   "expected": []
+  },
+  {
+   "name": "description has no rules",
+   "block": {
+    "id": "q",
+    "type": "description",
+    "text": "x"
+   },
+   "expected": []
+  }
+ ],
+ "patterns": [
+  {
+   "pattern": "^[A-Z]{2}-[0-9]{4}$",
+   "error": null,
+   "matches": [
+    [
+     "AB-1234",
+     true
+    ],
+    [
+     "ab-1234",
+     false
+    ],
+    [
+     "AB-12345",
+     false
+    ]
+   ]
+  },
+  {
+   "pattern": "^FB-\\d{6}$",
+   "error": null,
+   "matches": [
+    [
+     "FB-204518",
+     true
+    ],
+    [
+     "FB-20451",
+     false
+    ]
+   ]
+  },
+  {
+   "pattern": "(foo|bar)+",
+   "error": null,
+   "matches": [
+    [
+     "xxbarfoo",
+     true
+    ],
+    [
+     "fo",
+     false
+    ]
+   ]
+  },
+  {
+   "pattern": "^(?:\\+?[0-9 ]{7,15})$",
+   "error": null,
+   "matches": [
+    [
+     "+44 20 7946",
+     true
+    ],
+    [
+     "12",
+     false
+    ]
+   ]
+  },
+  {
+   "pattern": "[\\w.-]+",
+   "error": null,
+   "matches": [
+    [
+     "a.b-c",
+     true
+    ],
+    [
+     "!!",
+     false
+    ]
+   ]
+  },
+  {
+   "pattern": "^\\s*$",
+   "error": null,
+   "matches": [
+    [
+     "  ",
+     true
+    ],
+    [
+     "a",
+     false
+    ]
+   ]
+  },
+  {
+   "pattern": "^\\S+$",
+   "error": null,
+   "matches": [
+    [
+     "abc",
+     true
+    ],
+    [
+     "a b",
+     false
+    ]
+   ]
+  },
+  {
+   "pattern": "^a.c$",
+   "error": null,
+   "matches": [
+    [
+     "abc",
+     true
+    ],
+    [
+     "a\rc",
+     false
+    ],
+    [
+     "a c",
+     false
+    ]
+   ]
+  },
+  {
+   "pattern": "colou?r",
+   "error": null,
+   "matches": [
+    [
+     "color",
+     true
+    ],
+    [
+     "colour",
+     true
+    ],
+    [
+     "colr",
+     false
+    ]
+   ]
+  },
+  {
+   "pattern": "^[^0-9]+$",
+   "error": null,
+   "matches": [
+    [
+     "abc",
+     true
+    ],
+    [
+     "a1",
+     false
+    ]
+   ]
+  },
+  {
+   "pattern": "^\\u0041\\x42$",
+   "error": null,
+   "matches": [
+    [
+     "AB",
+     true
+    ]
+   ]
+  },
+  {
+   "pattern": "^a{2,}$",
+   "error": null,
+   "matches": [
+    [
+     "aaaa",
+     true
+    ],
+    [
+     "a",
+     false
+    ]
+   ]
+  },
+  {
+   "pattern": "^[a\\-z]$",
+   "error": null,
+   "matches": [
+    [
+     "-",
+     true
+    ],
+    [
+     "b",
+     false
+    ]
+   ]
+  },
+  {
+   "pattern": "^[a-]$",
+   "error": null,
+   "matches": [
+    [
+     "-",
+     true
+    ]
+   ]
+  },
+  {
+   "pattern": "^\\$\\.\\(\\)$",
+   "error": null,
+   "matches": [
+    [
+     "$.()",
+     true
+    ]
+   ]
+  },
+  {
+   "pattern": "(a|a)*b",
+   "error": null,
+   "matches": [
+    [
+     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac",
+     false
+    ],
+    [
+     "aab",
+     true
+    ]
+   ]
+  },
+  {
+   "pattern": "^(a|aa)*$",
+   "error": null,
+   "matches": [
+    [
+     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab",
+     false
+    ]
+   ]
+  },
+  {
+   "pattern": "a*a*a*a*a*a*b",
+   "error": null,
+   "matches": [
+    [
+     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     false
+    ]
+   ]
+  },
+  {
+   "pattern": "",
+   "error": null,
+   "matches": [
+    [
+     "anything",
+     true
+    ]
+   ]
+  },
+  {
+   "pattern": "(a+)+$",
+   "error": "This pattern could be very slow to check. Avoid nested repeats like (a+)+.",
+   "matches": []
+  },
+  {
+   "pattern": "(a*)*",
+   "error": "This pattern could be very slow to check. Avoid nested repeats like (a+)+.",
+   "matches": []
+  },
+  {
+   "pattern": "((ab)?c)+",
+   "error": "This pattern could be very slow to check. Avoid nested repeats like (a+)+.",
+   "matches": []
+  },
+  {
+   "pattern": "(?:x{2})*",
+   "error": "This pattern could be very slow to check. Avoid nested repeats like (a+)+.",
+   "matches": []
+  },
+  {
+   "pattern": "(a)\\1",
+   "error": "Back-references like \\1 aren’t allowed.",
+   "matches": []
+  },
+  {
+   "pattern": "(?<n>a)\\k<n>",
+   "error": "This pattern uses a feature that isn’t supported. Use letters, digits, [ ] classes, groups, | and repeats like * + ? {2,5}.",
+   "matches": []
+  },
+  {
+   "pattern": "a\\k",
+   "error": "Back-references like \\1 aren’t allowed.",
+   "matches": []
+  },
+  {
+   "pattern": "(?=a)b",
+   "error": "Lookahead and lookbehind like (?=…) aren’t allowed.",
+   "matches": []
+  },
+  {
+   "pattern": "(?!a)b",
+   "error": "Lookahead and lookbehind like (?=…) aren’t allowed.",
+   "matches": []
+  },
+  {
+   "pattern": "(?<=a)b",
+   "error": "Lookahead and lookbehind like (?=…) aren’t allowed.",
+   "matches": []
+  },
+  {
+   "pattern": "(?<!a)b",
+   "error": "Lookahead and lookbehind like (?=…) aren’t allowed.",
+   "matches": []
+  },
+  {
+   "pattern": "(?i)abc",
+   "error": "This pattern uses a feature that isn’t supported. Use letters, digits, [ ] classes, groups, | and repeats like * + ? {2,5}.",
+   "matches": []
+  },
+  {
+   "pattern": "a+?",
+   "error": "This pattern uses a feature that isn’t supported. Use letters, digits, [ ] classes, groups, | and repeats like * + ? {2,5}.",
+   "matches": []
+  },
+  {
+   "pattern": "a++",
+   "error": "This pattern uses a feature that isn’t supported. Use letters, digits, [ ] classes, groups, | and repeats like * + ? {2,5}.",
+   "matches": []
+  },
+  {
+   "pattern": "\\bword",
+   "error": "This pattern uses a feature that isn’t supported. Use letters, digits, [ ] classes, groups, | and repeats like * + ? {2,5}.",
+   "matches": []
+  },
+  {
+   "pattern": "\\p{L}",
+   "error": "This pattern uses a feature that isn’t supported. Use letters, digits, [ ] classes, groups, | and repeats like * + ? {2,5}.",
+   "matches": []
+  },
+  {
+   "pattern": "[a-z",
+   "error": "Invalid pattern: missing closing ]",
+   "matches": []
+  },
+  {
+   "pattern": "(abc",
+   "error": "Invalid pattern: missing closing )",
+   "matches": []
+  },
+  {
+   "pattern": "abc)",
+   "error": "Invalid pattern: unmatched )",
+   "matches": []
+  },
+  {
+   "pattern": "*a",
+   "error": "Invalid pattern: nothing to repeat.",
+   "matches": []
+  },
+  {
+   "pattern": "^*",
+   "error": "Invalid pattern: nothing to repeat.",
+   "matches": []
+  },
+  {
+   "pattern": "a**",
+   "error": "Invalid pattern: nothing to repeat.",
+   "matches": []
+  },
+  {
+   "pattern": "a{2",
+   "error": "Invalid pattern: check the syntax.",
+   "matches": []
+  },
+  {
+   "pattern": "a{3,2}",
+   "error": "Invalid pattern: check the syntax.",
+   "matches": []
+  },
+  {
+   "pattern": "x{",
+   "error": "Invalid pattern: check the syntax.",
+   "matches": []
+  },
+  {
+   "pattern": "[]a]",
+   "error": "Invalid pattern: check the syntax.",
+   "matches": []
+  },
+  {
+   "pattern": "[z-a]",
+   "error": "Invalid pattern: check the syntax.",
+   "matches": []
+  },
+  {
+   "pattern": "[a-z-[aeiou]]",
+   "error": "This pattern uses a feature that isn’t supported. Use letters, digits, [ ] classes, groups, | and repeats like * + ? {2,5}.",
+   "matches": []
+  },
+  {
+   "pattern": "[\\D]",
+   "error": "This pattern uses a feature that isn’t supported. Use letters, digits, [ ] classes, groups, | and repeats like * + ? {2,5}.",
+   "matches": []
+  },
+  {
+   "pattern": "\\",
+   "error": "Invalid pattern: check the syntax.",
+   "matches": []
+  },
+  {
+   "pattern": "\\u12",
+   "error": "Invalid pattern: check the syntax.",
+   "matches": []
+  },
+  {
+   "pattern": "a{101}",
+   "error": "This pattern is too complex to check quickly. Use smaller repeat counts.",
+   "matches": []
+  },
+  {
+   "pattern": "[a-z]{100}[a-z]{100}[a-z]{100}(?:ab|cd){100}x{100}y{100}z{100}w{100}v{100}u{100}t{100}s{100}r{100}q{100}p{100}o{100}n{100}m{100}",
+   "error": "This pattern is too complex to check quickly. Use smaller repeat counts.",
+   "matches": []
+  },
+  {
+   "pattern": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "error": "Use 200 characters or fewer for the pattern.",
+   "matches": []
+  }
+ ]
+}

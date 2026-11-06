@@ -1,0 +1,186 @@
+@if (missing()) {
+  <app-not-found />
+} @else {
+<div class="fb-app">
+  <app-header active="forms" />
+
+  @if (form()?.status === 'closed') {
+    <div class="fb-banner fb-banner--info" role="status">
+      <div class="fb-container">
+        <svg class="fb-alert__icon" appIcon="lock"></svg>
+        <p class="fb-alert__text"><strong>Responses are closed.</strong> People with the public link see a closed message. Existing responses stay here.</p>
+        <div class="fb-alert__actions"><a class="fb-btn fb-btn--secondary fb-btn--sm resp-banner-link" [routerLink]="['/forms', id(), 'edit']">Reopen responses</a></div>
+      </div>
+    </div>
+  }
+
+  <main class="fb-main" id="main">
+    <div class="fb-container">
+      @if (loadError(); as err) {
+        <app-system-error [offline]="err.isNetwork" [reference]="$any(err.problem)['traceId'] ?? null" (retry)="load()" />
+      } @else {
+        <nav class="fb-breadcrumb resp-crumbs" aria-label="Breadcrumb">
+          <a routerLink="/forms">Forms</a>
+          <svg appIcon="chevron-right"></svg>
+          <span aria-current="page">{{ form()?.title }}</span>
+        </nav>
+        <div class="fb-page-header">
+          <div class="fb-page-header__main">
+            <h1 #heading class="fb-page-header__title" tabindex="-1">{{ form()?.title }}</h1>
+            @if (form(); as f) {
+              <div class="fb-page-header__meta"><app-status-badges [status]="f.status" [unpublished]="f.hasUnpublishedChanges" [small]="false" [showVersion]="false" /></div>
+            }
+          </div>
+          <div class="fb-page-header__actions">
+            @if (link()) {
+              <button type="button" class="fb-btn fb-btn--secondary" (click)="copyLink()"><svg appIcon="link"></svg>Copy public link</button>
+            }
+            @if (total() > 0 || loading()) {
+              <button type="button" class="fb-btn fb-btn--secondary" [class.is-loading]="exporting()" [attr.aria-busy]="exporting() || null" (click)="exportCsv()"><svg appIcon="download"></svg>Export CSV</button>
+            } @else {
+              <span class="resp-export">
+                <button type="button" class="fb-btn fb-btn--secondary" aria-disabled="true" aria-describedby="export-hint"><svg appIcon="download"></svg>Export CSV</button>
+                <span class="fb-caption" id="export-hint">Nothing to export yet</span>
+              </span>
+            }
+          </div>
+        </div>
+        <nav class="fb-tabs resp-tabs" aria-label="Form views">
+          <a class="fb-tab" [routerLink]="['/forms', id(), 'edit']"><svg appIcon="edit"></svg>Edit form</a>
+          <a class="fb-tab" [routerLink]="['/forms', id(), 'responses']" aria-current="page"><svg appIcon="inbox"></svg>Responses <span class="fb-counter">{{ total().toLocaleString('en-US') }}</span></a>
+        </nav>
+        <div class="resp-summary">
+          <p class="resp-summary__item resp-summary__count" aria-live="polite"><span><strong>{{ total().toLocaleString('en-US') }}</strong> {{ total() === 1 ? 'response' : 'responses' }}</span></p>
+          @if (form()?.liveVersion; as v) {
+            <p class="resp-summary__item">Live version <span class="fb-version fb-version--current"><span aria-hidden="true">v{{ v }}</span><span class="fb-sr-only">Version {{ v }}</span></span></p>
+          }
+          @if (link()) {
+            <p class="resp-summary__item"><a class="fb-link" [href]="link()" target="_blank" rel="noopener">Open public form</a><svg appIcon="external-link"></svg></p>
+          }
+        </div>
+
+        @if (loading() || total() > 0) {
+          <section aria-labelledby="resp-caption">
+            <div class="fb-table-wrap resp-table-wrap" role="region" aria-labelledby="resp-caption" tabindex="0">
+              <table class="fb-table fb-table--clickable fb-table--stack resp-table" [attr.aria-busy]="loading()">
+                <caption class="fb-sr-only" id="resp-caption">Responses to {{ form()?.title }}, newest first</caption>
+                <thead>
+                  <tr>
+                    <th scope="col"><span aria-hidden="true">#</span><span class="fb-sr-only">Response</span></th>
+                    <th scope="col">Submitted</th>
+                    <th scope="col">Version</th>
+                    @for (c of columns(); track c.id) {
+                      <th scope="col" class="resp-q" [title]="header(c)" [class.fb-table__num]="c.type === 'scale' || c.type === 'number'">{{ header(c) }}</th>
+                    }
+                    <th scope="col" class="fb-table__actions"><span class="fb-sr-only">Actions</span></th>
+                  </tr>
+                </thead>
+                @if (loading() && !page()) {
+                  <tbody aria-hidden="true">
+                    @for (w of [120, 127, 134, 141, 124, 131, 138, 121, 128, 135]; track $index) {
+                      <tr>
+                        <td data-label="Response"><span class="fb-skeleton fb-skeleton--text" style="width:40px"></span></td>
+                        <td data-label="Submitted"><span class="fb-skeleton fb-skeleton--text" [style.width.px]="w"></span></td>
+                        <td data-label="Version"><span class="fb-skeleton fb-skeleton--text" style="width:28px;height:20px"></span></td>
+                        @for (c of columns(); track c.id) { <td><span class="fb-skeleton fb-skeleton--text" [style.width.px]="w - 30"></span></td> }
+                        <td class="fb-table__actions"><span class="fb-skeleton fb-skeleton--text" style="width:96px;height:24px;margin-left:auto"></span></td>
+                      </tr>
+                    }
+                  </tbody>
+                } @else {
+                  <tbody>
+                    @for (r of page()?.items ?? []; track r.id) {
+                      <tr (click)="open(r, $event)">
+                        <td data-label="Response" class="fb-table__primary fb-num">#{{ r.number }}</td>
+                        <td data-label="Submitted" class="fb-num"><time [attr.datetime]="r.submittedAt">{{ dateTime(r.submittedAt) }}</time></td>
+                        <td data-label="Version">
+                          <span><span class="fb-version" [class.fb-version--current]="isLive(r)"><span aria-hidden="true">v{{ r.version }}</span><span class="fb-sr-only">Version {{ r.version }}{{ isLive(r) ? ' (live)' : '' }}</span></span></span>
+                        </td>
+                        @for (c of columns(); track c.id) {
+                          @let v = cell(r, c);
+                          <td class="resp-q" [attr.data-label]="header(c)" [class.fb-table__num]="c.type === 'scale' || c.type === 'number'">
+                            @if (!v) { <span class="fb-muted" aria-label="No answer">—</span> }
+                            @else if (c.type === 'scale') { <span>{{ v }}<span class="fb-sr-only"> of {{ c.max ?? 5 }}</span></span> }
+                            @else if (c.type === 'email') { <span class="fb-truncate">{{ v }}</span> }
+                            @else { <span>{{ v }}</span> }
+                          </td>
+                        }
+                        <td class="fb-table__actions">
+                          <div class="resp-row-actions">
+                            <a class="fb-btn fb-btn--ghost fb-btn--sm" [routerLink]="['/forms', id(), 'responses', r.id]" [attr.aria-label]="'View response #' + r.number">View<svg class="icon--sm" appIcon="chevron-right"></svg></a>
+                            <div class="fb-menu-anchor">
+                              <button #trigger type="button" class="fb-btn fb-btn--ghost fb-btn--icon fb-btn--sm" appMenuTrigger [attr.aria-label]="'More actions for response #' + r.number"><svg appIcon="more-horizontal"></svg></button>
+                              <div class="fb-menu" role="menu" [attr.aria-label]="'Response #' + r.number" hidden>
+                                <a class="fb-menu__item" role="menuitem" [routerLink]="['/forms', id(), 'responses', r.id]"><svg appIcon="eye"></svg>View</a>
+                                <hr class="fb-menu__sep" />
+                                <button type="button" class="fb-menu__item fb-menu__item--danger" role="menuitem" (click)="askDelete(r, trigger)"><svg appIcon="trash"></svg>Delete…</button>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                }
+              </table>
+            </div>
+            @if (page()) {
+              <div class="fb-pagination">
+                <span aria-live="polite"><span>{{ range() }}</span> of <span>{{ total().toLocaleString('en-US') }}</span></span>
+                <div class="fb-btn-group" role="group" aria-label="Pagination">
+                  <button type="button" class="fb-btn fb-btn--secondary fb-btn--sm" [disabled]="pageNo() <= 1 || loading()" (click)="go(pageNo() - 1)"><svg appIcon="chevron-left"></svg>Previous</button>
+                  <button type="button" class="fb-btn fb-btn--secondary fb-btn--sm" [disabled]="pageNo() >= lastPage() || loading()" (click)="go(pageNo() + 1)">Next<svg appIcon="chevron-right"></svg></button>
+                </div>
+              </div>
+            } @else {
+              <p class="fb-sr-only" role="status">Loading responses…</p>
+            }
+            @if (form()?.liveVersion; as v) {
+              <p class="resp-note">
+                <svg appIcon="history"></svg>
+                <span>Responses keep the version of the form they were submitted to. <span class="fb-version fb-version--current" aria-hidden="true">v{{ v }}</span> is the live version, older versions use a plain chip.</span>
+              </p>
+            }
+          </section>
+        } @else {
+          <section class="fb-card" aria-labelledby="empty-t">
+            <div class="fb-empty">
+              <div class="fb-empty__icon"><svg appIcon="inbox"></svg></div>
+              <h2 class="fb-empty__title" id="empty-t">No responses yet</h2>
+              @if (link()) {
+                <p class="fb-empty__text">Share the public link to start collecting responses.</p>
+                <div class="fb-copy resp-empty-copy">
+                  <label class="fb-sr-only" for="empty-link">Public link</label>
+                  <input class="fb-input fb-input--mono" id="empty-link" readonly [value]="link()" />
+                  <button type="button" class="fb-btn fb-btn--secondary" (click)="copyLink()"><svg appIcon="copy"></svg>Copy</button>
+                </div>
+                <div class="fb-empty__actions">
+                  <a class="fb-btn fb-btn--ghost" [href]="link()" target="_blank" rel="noopener"><svg appIcon="external-link"></svg>Open public form</a>
+                </div>
+              } @else {
+                <p class="fb-empty__text">Publish the form to get its public link and start collecting responses.</p>
+                <div class="fb-empty__actions">
+                  <a class="fb-btn fb-btn--primary" [routerLink]="['/forms', id(), 'edit']"><svg appIcon="edit"></svg>Edit form</a>
+                </div>
+              }
+            </div>
+          </section>
+        }
+      }
+    </div>
+  </main>
+</div>
+}
+
+<dialog #deleteDlg class="fb-dialog fb-dialog--danger fb-dialog--sm" aria-labelledby="dlg-delete-t" aria-describedby="dlg-delete-d" (cancel)="$event.preventDefault(); cancelDelete()">
+  <div class="fb-dialog__header">
+    <span class="fb-dialog__icon"><svg appIcon="trash"></svg></span>
+    <h2 class="fb-dialog__title" id="dlg-delete-t">Delete response #{{ pending()?.number }}?</h2>
+    <button type="button" class="fb-btn fb-btn--ghost fb-btn--icon fb-btn--sm" aria-label="Close" (click)="cancelDelete()"><svg appIcon="x"></svg></button>
+  </div>
+  <div class="fb-dialog__body"><p id="dlg-delete-d">This permanently deletes this response. This can’t be undone.</p></div>
+  <div class="fb-dialog__footer">
+    <button type="button" class="fb-btn fb-btn--secondary" autofocus (click)="cancelDelete()">Cancel</button>
+    <button type="button" class="fb-btn fb-btn--danger" [class.is-loading]="deleting()" [attr.aria-busy]="deleting() || null" (click)="confirmDelete()"><svg appIcon="trash"></svg>Delete response</button>
+  </div>
+</dialog>

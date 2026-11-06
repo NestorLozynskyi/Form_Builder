@@ -1,0 +1,13 @@
+/* screens/public-form.html page styles */
+.pf-result-kicker { font-size: var(--fs-14); color: var(--text-2); overflow-wrap: anywhere; }
+.fb-form__result-title:focus { outline: none; }
+.fb-form__result-title:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; border-radius: 2px; }
+.fb-form__result-text { white-space: pre-line; overflow-wrap: anywhere; }
+/* Neutral page for an unknown form: no accent, the form is not known. */
+.pf-neutral { min-height: 100vh; min-height: 100dvh; background: var(--bg); color: var(--text); padding: var(--space-7) var(--page-pad) var(--space-6); }
+.pf-neutral .fb-form { border-top: 1px solid var(--border); }
+.pf-loading { display: flex; justify-content: center; padding: var(--space-8) 0; }
+.pf-notice { max-width: 680px; margin: 0 auto var(--space-4); }
+@media (max-width: 767.98px) {
+  .pf-neutral { padding: var(--space-4) var(--space-3) var(--space-5); }
+}

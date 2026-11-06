@@ -1,0 +1,71 @@
+name: ${COMPOSE_PROJECT_NAME:-form-builder}
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    # Defaults (formbuilder/formbuilder) are for local development only; override them via .env.
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-formbuilder}
+      POSTGRES_USER: ${POSTGRES_USER:-formbuilder}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-formbuilder}
+    volumes:
+      # postgres 18+ images keep data under /var/lib/postgresql/<major>/docker; mount the parent.
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [internal]
+    # Not published to the host by default; see compose.db-port.yaml.
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=${POSTGRES_DB:-formbuilder};Username=${POSTGRES_USER:-formbuilder};Password=${POSTGRES_PASSWORD:-formbuilder}
+      Database__ApplyMigrationsOnStartup: ${APPLY_MIGRATIONS_ON_STARTUP:-true}
+      RateLimits__AuthPermitLimit: ${RATE_LIMIT_AUTH_PER_WINDOW:-10}
+      RateLimits__SubmitPermitLimit: ${RATE_LIMIT_SUBMIT_PER_WINDOW:-10}
+      RateLimits__WindowSeconds: ${RATE_LIMIT_WINDOW_SECONDS:-60}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [internal]
+
+  caddy:
+    build:
+      context: .
+      dockerfile: deploy/caddy/Dockerfile
+    restart: unless-stopped
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-:80}
+      ACME_EMAIL: ${ACME_EMAIL:-admin@localhost}
+      BACKEND_UPSTREAM: backend:8080
+    ports:
+      - "${CADDY_BIND_ADDRESS:-127.0.0.1}:${CADDY_HTTP_PORT:-8180}:80"
+      - "${CADDY_BIND_ADDRESS:-127.0.0.1}:${CADDY_HTTPS_PORT:-8543}:443"
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:80/ && wget -q -O /dev/null http://127.0.0.1:80/api/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks: [internal]
+
+volumes:
+  postgres-data:
+  caddy-data:
+  caddy-config:
+
+networks:
+  internal:

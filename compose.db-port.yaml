@@ -1,0 +1,6 @@
+# Optional override: publish PostgreSQL on the host (for running the backend / dotnet-ef without Docker).
+# Usage: docker compose -f compose.yaml -f compose.db-port.yaml up -d postgres
+services:
+  postgres:
+    ports:
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5442}:5432"
